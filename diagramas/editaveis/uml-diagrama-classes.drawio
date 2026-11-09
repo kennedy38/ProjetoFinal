@@ -1,0 +1,245 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mxfile host="app.diagrams.net" agent="ChatGPT" version="24.7.17" type="device">
+  <diagram id="mentoria-uml-class-revised" name="UML - Classes - revisado">
+    <mxGraphModel dx="1900" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2160" pageHeight="1710" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="&lt;div style=&quot;font-size:28px&quot;&gt;&lt;b&gt;MentorIA Acadêmica — UML: Diagrama de Classes&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:15px;color:#475569&quot;&gt;Oito entidades de domínio e dois serviços da aplicação · Arquitetura monolítica modular&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="200" y="32" width="1760" height="85" as="geometry"/>
+        </mxCell>
+        <mxCell id="domain_label" value="ENTIDADES DO DOMÍNIO — atributos, operações, associações e multiplicidades" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontFamily=Arial;fontStyle=1;fontSize=18;fontColor=#1e3a8a;" vertex="1" parent="1">
+          <mxGeometry x="100" y="128" width="1520" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="service_label" value="SERVIÇOS DE APLICAÇÃO — dependências tracejadas" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontFamily=Arial;fontStyle=1;fontSize=18;fontColor=#1e3a8a;" vertex="1" parent="1">
+          <mxGeometry x="420" y="1268" width="1300" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="usuario" value="&lt;div style=&quot;font-family:Arial;margin:0&quot;&gt;&lt;div style=&quot;background:#145ac1;color:#ffffff;text-align:center;padding:10px 0;font-size:20px&quot;&gt;&lt;b&gt;Usuario&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;color:#183b70;font-family:monospace;font-size:13px;text-align:left;line-height:1.6;padding:7px 11px&quot;&gt;- id: Long&lt;br&gt;- nome: String&lt;br&gt;- email: String&lt;br&gt;- senhaHash: String&lt;br&gt;- perfil: PerfilUsuario&lt;br&gt;- ativo: Boolean&lt;br&gt;- aceitePrivacidadeEm: DateTime&lt;/div&gt;&lt;div style=&quot;border-top:1px solid #93b4dc;color:#183b70;font-family:monospace;font-size:12px;text-align:left;line-height:1.65;padding:7px 11px&quot;&gt;+ alterarPerfil(perfil: PerfilUsuario): void&lt;br&gt;+ desativar(): void&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;html=1;whiteSpace=wrap;overflow=fill;fillColor=#eaf3ff;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=left;verticalAlign=top;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="300" width="420" height="315" as="geometry"/>
+        </mxCell>
+        <mxCell id="disponibilidade" value="&lt;div style=&quot;font-family:Arial;margin:0&quot;&gt;&lt;div style=&quot;background:#145ac1;color:#ffffff;text-align:center;padding:10px 0;font-size:20px&quot;&gt;&lt;b&gt;Disponibilidade&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;color:#183b70;font-family:monospace;font-size:13px;text-align:left;line-height:1.6;padding:7px 11px&quot;&gt;- id: Long&lt;br&gt;- mentorId: Long&lt;br&gt;- inicioEm: DateTime&lt;br&gt;- duracaoMinutos: Int&lt;br&gt;- ativa: Boolean&lt;/div&gt;&lt;div style=&quot;border-top:1px solid #93b4dc;color:#183b70;font-family:monospace;font-size:12px;text-align:left;line-height:1.65;padding:7px 11px&quot;&gt;+ podeReservar(): Boolean&lt;br&gt;+ inativar(): void&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;html=1;whiteSpace=wrap;overflow=fill;fillColor=#eaf3ff;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=left;verticalAlign=top;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="610" y="300" width="420" height="315" as="geometry"/>
+        </mxCell>
+        <mxCell id="agendamento" value="&lt;div style=&quot;font-family:Arial;margin:0&quot;&gt;&lt;div style=&quot;background:#145ac1;color:#ffffff;text-align:center;padding:10px 0;font-size:20px&quot;&gt;&lt;b&gt;Agendamento&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;color:#183b70;font-family:monospace;font-size:13px;text-align:left;line-height:1.6;padding:7px 11px&quot;&gt;- id: Long&lt;br&gt;- disponibilidadeId: Long&lt;br&gt;- estudanteId: Long&lt;br&gt;- mentorId: Long&lt;br&gt;- disciplinaId: Long&lt;br&gt;- inicioEm: DateTime&lt;br&gt;- duracaoMinutos: Int&lt;br&gt;- status: StatusAgendamento&lt;/div&gt;&lt;div style=&quot;border-top:1px solid #93b4dc;color:#183b70;font-family:monospace;font-size:12px;text-align:left;line-height:1.65;padding:7px 11px&quot;&gt;+ confirmar(): void&lt;br&gt;+ recusar(justificativa: String): void&lt;br&gt;+ cancelar(): void&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;html=1;whiteSpace=wrap;overflow=fill;fillColor=#eaf3ff;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=left;verticalAlign=top;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="300" width="420" height="315" as="geometry"/>
+        </mxCell>
+        <mxCell id="sessao" value="&lt;div style=&quot;font-family:Arial;margin:0&quot;&gt;&lt;div style=&quot;background:#145ac1;color:#ffffff;text-align:center;padding:10px 0;font-size:20px&quot;&gt;&lt;b&gt;SessaoMentoria&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;color:#183b70;font-family:monospace;font-size:13px;text-align:left;line-height:1.6;padding:7px 11px&quot;&gt;- id: Long&lt;br&gt;- agendamentoId: Long&lt;br&gt;- compareceu: Boolean&lt;br&gt;- duracaoRealMin: Int?&lt;br&gt;- observacoes: String&lt;/div&gt;&lt;div style=&quot;border-top:1px solid #93b4dc;color:#183b70;font-family:monospace;font-size:12px;text-align:left;line-height:1.65;padding:7px 11px&quot;&gt;+ registrarConclusao(): void&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;html=1;whiteSpace=wrap;overflow=fill;fillColor=#eaf3ff;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=left;verticalAlign=top;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="1630" y="300" width="420" height="315" as="geometry"/>
+        </mxCell>
+        <mxCell id="disciplina" value="&lt;div style=&quot;font-family:Arial;margin:0&quot;&gt;&lt;div style=&quot;background:#145ac1;color:#ffffff;text-align:center;padding:10px 0;font-size:20px&quot;&gt;&lt;b&gt;Disciplina&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;color:#183b70;font-family:monospace;font-size:13px;text-align:left;line-height:1.6;padding:7px 11px&quot;&gt;- id: Long&lt;br&gt;- codigo: String&lt;br&gt;- nome: String&lt;br&gt;- ativa: Boolean&lt;/div&gt;&lt;div style=&quot;border-top:1px solid #93b4dc;color:#183b70;font-family:monospace;font-size:12px;text-align:left;line-height:1.65;padding:7px 11px&quot;&gt;+ inativar(): void&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;html=1;whiteSpace=wrap;overflow=fill;fillColor=#eaf3ff;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=left;verticalAlign=top;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="860" width="420" height="275" as="geometry"/>
+        </mxCell>
+        <mxCell id="mentor_disc" value="&lt;div style=&quot;font-family:Arial;margin:0&quot;&gt;&lt;div style=&quot;background:#145ac1;color:#ffffff;text-align:center;padding:10px 0;font-size:20px&quot;&gt;&lt;b&gt;MentorDisciplina&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;color:#183b70;font-family:monospace;font-size:13px;text-align:left;line-height:1.6;padding:7px 11px&quot;&gt;- mentorId: Long&lt;br&gt;- disciplinaId: Long&lt;/div&gt;&lt;div style=&quot;border-top:1px solid #93b4dc;color:#183b70;font-family:monospace;font-size:12px;text-align:left;line-height:1.65;padding:7px 11px&quot;&gt;+ vincular(): void&lt;br&gt;+ desvincular(): void&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;html=1;whiteSpace=wrap;overflow=fill;fillColor=#eaf3ff;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=left;verticalAlign=top;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="610" y="860" width="420" height="275" as="geometry"/>
+        </mxCell>
+        <mxCell id="notificacao" value="&lt;div style=&quot;font-family:Arial;margin:0&quot;&gt;&lt;div style=&quot;background:#145ac1;color:#ffffff;text-align:center;padding:10px 0;font-size:20px&quot;&gt;&lt;b&gt;Notificacao&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;color:#183b70;font-family:monospace;font-size:13px;text-align:left;line-height:1.6;padding:7px 11px&quot;&gt;- id: Long&lt;br&gt;- usuarioId: Long&lt;br&gt;- agendamentoId: Long?&lt;br&gt;- mensagem: String&lt;br&gt;- lida: Boolean&lt;/div&gt;&lt;div style=&quot;border-top:1px solid #93b4dc;color:#183b70;font-family:monospace;font-size:12px;text-align:left;line-height:1.65;padding:7px 11px&quot;&gt;+ marcarComoLida(): void&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;html=1;whiteSpace=wrap;overflow=fill;fillColor=#eaf3ff;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=left;verticalAlign=top;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="860" width="420" height="275" as="geometry"/>
+        </mxCell>
+        <mxCell id="avaliacao" value="&lt;div style=&quot;font-family:Arial;margin:0&quot;&gt;&lt;div style=&quot;background:#145ac1;color:#ffffff;text-align:center;padding:10px 0;font-size:20px&quot;&gt;&lt;b&gt;Avaliacao&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;color:#183b70;font-family:monospace;font-size:13px;text-align:left;line-height:1.6;padding:7px 11px&quot;&gt;- id: Long&lt;br&gt;- sessaoId: Long&lt;br&gt;- nota: Int&lt;br&gt;- comentario: String?&lt;/div&gt;&lt;div style=&quot;border-top:1px solid #93b4dc;color:#183b70;font-family:monospace;font-size:12px;text-align:left;line-height:1.65;padding:7px 11px&quot;&gt;+ validarNota(): Boolean&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;html=1;whiteSpace=wrap;overflow=fill;fillColor=#eaf3ff;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=left;verticalAlign=top;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="1630" y="860" width="420" height="275" as="geometry"/>
+        </mxCell>
+        <mxCell id="auth_service" value="&lt;div style=&quot;font-family:Arial;margin:0&quot;&gt;&lt;div style=&quot;background:#145ac1;color:#ffffff;text-align:center;padding:10px 0;font-size:20px&quot;&gt;&lt;b&gt;AutenticacaoService&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;color:#183b70;font-family:monospace;font-size:13px;text-align:left;line-height:1.6;padding:7px 11px&quot;&gt;- usuariosRepo: UsuarioRepository&lt;/div&gt;&lt;div style=&quot;border-top:1px solid #93b4dc;color:#183b70;font-family:monospace;font-size:12px;text-align:left;line-height:1.65;padding:7px 11px&quot;&gt;+ login(email: String, senha: String): TokenJWT&lt;br&gt;+ validarToken(token: String): Usuario&lt;br&gt;+ autorizar(perfil: PerfilUsuario): Boolean&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;html=1;whiteSpace=wrap;overflow=fill;fillColor=#eaf3ff;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=left;verticalAlign=top;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="420" y="1320" width="500" height="225" as="geometry"/>
+        </mxCell>
+        <mxCell id="agenda_service" value="&lt;div style=&quot;font-family:Arial;margin:0&quot;&gt;&lt;div style=&quot;background:#145ac1;color:#ffffff;text-align:center;padding:10px 0;font-size:20px&quot;&gt;&lt;b&gt;AgendamentoService&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;color:#183b70;font-family:monospace;font-size:13px;text-align:left;line-height:1.6;padding:7px 11px&quot;&gt;- agendaRepo: AgendamentoRepository&lt;br&gt;- horarioRepo: DisponibilidadeRepository&lt;/div&gt;&lt;div style=&quot;border-top:1px solid #93b4dc;color:#183b70;font-family:monospace;font-size:12px;text-align:left;line-height:1.65;padding:7px 11px&quot;&gt;+ solicitar(estudanteId: Long, horarioId: Long): Long&lt;br&gt;+ confirmar(id: Long, mentorId: Long): void&lt;br&gt;+ recusar(id: Long, mentorId: Long): void&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;html=1;whiteSpace=wrap;overflow=fill;fillColor=#eaf3ff;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=left;verticalAlign=top;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="1320" width="500" height="225" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_mentor_horarios" value="mentor define horários" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;strokeColor=#64748b;endArrow=none;startArrow=none;" edge="1" parent="1" source="usuario" target="disponibilidade">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="520" y="450" as="sourcePoint"/>
+            <mxPoint x="610" y="450" as="targetPoint"/>
+            <Array as="points"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="assoc_mentor_horarios_s" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="506" y="426" width="44" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_mentor_horarios_t" value="0..*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="568" y="426" width="56" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_horario_agenda" value="histórico de pedidos" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;strokeColor=#64748b;endArrow=none;startArrow=none;" edge="1" parent="1" source="disponibilidade" target="agendamento">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1030" y="450" as="sourcePoint"/>
+            <mxPoint x="1120" y="450" as="targetPoint"/>
+            <Array as="points"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="assoc_horario_agenda_s" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1016" y="426" width="44" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_horario_agenda_t" value="0..*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1068" y="426" width="56" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_agenda_sessao" value="origina" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;strokeColor=#64748b;endArrow=none;startArrow=none;" edge="1" parent="1" source="agendamento" target="sessao">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1540" y="450" as="sourcePoint"/>
+            <mxPoint x="1630" y="450" as="targetPoint"/>
+            <Array as="points"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="assoc_agenda_sessao_s" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1526" y="426" width="44" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_agenda_sessao_t" value="0..1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1580" y="426" width="56" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_estudante_agenda" value="estudante realiza" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;strokeColor=#64748b;endArrow=none;startArrow=none;" edge="1" parent="1" source="usuario" target="agendamento">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="215" y="300" as="sourcePoint"/>
+            <mxPoint x="1320" y="300" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="215" y="174"/>
+              <mxPoint x="1320" y="174"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="assoc_estudante_agenda_s" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="208" y="275" width="44" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_estudante_agenda_t" value="0..*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1268" y="275" width="56" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_mentor_agenda" value="mentor recebe" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;strokeColor=#64748b;endArrow=none;startArrow=none;" edge="1" parent="1" source="usuario" target="agendamento">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="390" y="300" as="sourcePoint"/>
+            <mxPoint x="1505" y="300" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="390" y="222"/>
+              <mxPoint x="1505" y="222"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="assoc_mentor_agenda_s" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="387" y="275" width="44" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_mentor_agenda_t" value="0..*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1448" y="275" width="56" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_mentor_disc" value="mentor vinculado à disciplina" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;strokeColor=#64748b;endArrow=none;startArrow=none;" edge="1" parent="1" source="usuario" target="mentor_disc">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="615" as="sourcePoint"/>
+            <mxPoint x="810" y="860" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="310" y="735"/>
+              <mxPoint x="810" y="735"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="assoc_mentor_disc_s" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="292" y="634" width="44" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_mentor_disc_t" value="0..*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="798" y="822" width="56" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_disciplina_mentor" value="disciplina associada" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;strokeColor=#64748b;endArrow=none;startArrow=none;" edge="1" parent="1" source="disciplina" target="mentor_disc">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="520" y="1000" as="sourcePoint"/>
+            <mxPoint x="610" y="1000" as="targetPoint"/>
+            <Array as="points"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="assoc_disciplina_mentor_s" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="506" y="972" width="44" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_disciplina_mentor_t" value="0..*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="566" y="972" width="56" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_agenda_notif" value="gera avisos" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;strokeColor=#64748b;endArrow=none;startArrow=none;" edge="1" parent="1" source="agendamento" target="notificacao">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1325" y="615" as="sourcePoint"/>
+            <mxPoint x="1325" y="860" as="targetPoint"/>
+            <Array as="points"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="assoc_agenda_notif_s" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1322" y="645" width="44" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_agenda_notif_t" value="0..*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1328" y="818" width="56" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_sessao_avaliacao" value="recebe avaliação" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;strokeColor=#64748b;endArrow=none;startArrow=none;" edge="1" parent="1" source="sessao" target="avaliacao">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1845" y="615" as="sourcePoint"/>
+            <mxPoint x="1845" y="860" as="targetPoint"/>
+            <Array as="points"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="assoc_sessao_avaliacao_s" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1840" y="645" width="44" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_sessao_avaliacao_t" value="0..1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1846" y="818" width="56" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_destinatario" value="destinatário de notificações" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;strokeColor=#64748b;endArrow=none;startArrow=none;" edge="1" parent="1" source="usuario" target="notificacao">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="570" as="sourcePoint"/>
+            <mxPoint x="1300" y="1135" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="52" y="570"/>
+              <mxPoint x="52" y="1215"/>
+              <mxPoint x="1300" y="1215"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="assoc_destinatario_s" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="44" y="585" width="44" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc_destinatario_t" value="0..*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1296" y="1155" width="56" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="dep_auth_usuario" value="consulta identidade" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;strokeColor=#64748b;endArrow=none;startArrow=none;dashed=1;dashPattern=6 4;endArrow=open;endFill=0;" edge="1" parent="1" source="auth_service" target="usuario">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="420" y="1445" as="sourcePoint"/>
+            <mxPoint x="100" y="515" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="75" y="1445"/>
+              <mxPoint x="75" y="515"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dep_agenda_agendamento" value="aplica regras" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;strokeColor=#64748b;endArrow=none;startArrow=none;dashed=1;dashPattern=6 4;endArrow=open;endFill=0;" edge="1" parent="1" source="agenda_service" target="agendamento">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1480" y="1320" as="sourcePoint"/>
+            <mxPoint x="1490" y="615" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="1480" y="1242"/>
+              <mxPoint x="1590" y="1242"/>
+              <mxPoint x="1590" y="666"/>
+              <mxPoint x="1490" y="666"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_stud" value="estudante realiza agendamentos" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="660" y="151" width="380" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_mentor" value="mentor recebe solicitações" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="720" y="202" width="350" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_mentor_dis" value="mentor ministra disciplinas" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="435" y="698" width="360" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_notic" value="gera notificações" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1338" y="726" width="200" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_rating" value="sessão recebe avaliação" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1852" y="725" width="240" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_dest" value="usuário recebe avisos" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="530" y="1186" width="340" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_auth_dep" value="consulta identidade" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1478" width="290" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_agenda_dep" value="manipula agendamentos" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=13;fontColor=#334155;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1624" y="1224" width="280" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend" value="Convenções: linha contínua = associação de domínio; linha tracejada = dependência de serviço; multiplicidades junto às extremidades.&#10;&#10;Regra: cada disponibilidade admite no máximo 1 pedido ATIVO por vez, mas vários pedidos no histórico; ativo = PENDENTE ou CONFIRMADO." style="rounded=1;html=1;whiteSpace=wrap;fillColor=#eef4ff;strokeColor=#a3c5f5;strokeWidth=1;fontColor=#173b77;fontSize=14;fontFamily=Arial;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="195" y="1576" width="1740" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="footer" value="Projeto Final — Análise de Projetos e Sistemas | Autores: Hadson, Kennedy e Guilherme | 05/11/2026" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontColor=#475569;fontSize=14;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="320" y="1650" width="1500" height="32" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

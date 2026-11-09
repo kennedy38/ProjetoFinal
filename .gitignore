@@ -1,0 +1,21 @@
+# Arquivos temporários / editores
+.DS_Store
+Thumbs.db
+*~
+*.swp
+.$*
+*.bkp
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+
+# Futuro desenvolvimento (ainda não há aplicação implementada)
+node_modules/
+.env
+.env.local
+.env.*.local
+dist/
+coverage/
+
+# A documentação, .env.example, arquivos .drawio e imagens PNG devem ser versionados.

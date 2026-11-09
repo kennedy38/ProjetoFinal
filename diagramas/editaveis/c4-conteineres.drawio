@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="Electron" agent="ChatGPT">
+  <diagram id="mentoria-c4-containers" name="C4 - Nível 2 - Contêineres">
+    <mxGraphModel dx="1589" dy="945" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Arial;" value="&lt;div style=&quot;font-size:25px&quot;&gt;&lt;b&gt;MentorIA Acadêmica — C4 Nível 2: Contêineres&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:15px;color:#475569&quot;&gt;Visão dos principais contêineres da solução e de como se comunicam&lt;/div&gt;" vertex="1">
+          <mxGeometry height="85" width="1180" x="355" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="student" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf3ff;strokeColor=#2563eb;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=center;verticalAlign=middle;spacing=12;arcSize=12;" value="&lt;div style=&quot;font-size:14px&quot;&gt;&lt;b&gt;PESSOA&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:20px&quot;&gt;&lt;b&gt;Estudante&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px&quot;&gt;Busca mentores, solicita horários&lt;br&gt;e avalia sessões concluídas&lt;/div&gt;" vertex="1">
+          <mxGeometry height="140" width="300" x="55" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="mentor" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf3ff;strokeColor=#2563eb;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=center;verticalAlign=middle;spacing=12;arcSize=12;" value="&lt;div style=&quot;font-size:14px&quot;&gt;&lt;b&gt;PESSOA&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:20px&quot;&gt;&lt;b&gt;Mentor&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px&quot;&gt;Disponibiliza horários, confirma&lt;br&gt;ou recusa solicitações&lt;/div&gt;" vertex="1">
+          <mxGeometry height="140" width="300" x="55" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="coordinator" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf3ff;strokeColor=#2563eb;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=center;verticalAlign=middle;spacing=12;arcSize=12;" value="&lt;div style=&quot;font-size:14px&quot;&gt;&lt;b&gt;PESSOA&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:20px&quot;&gt;&lt;b&gt;Coordenador&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px&quot;&gt;Acompanha atividades&lt;br&gt;e consulta relatórios&lt;/div&gt;" vertex="1">
+          <mxGeometry height="140" width="300" x="55" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="admin" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf3ff;strokeColor=#2563eb;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=center;verticalAlign=middle;spacing=12;arcSize=12;" value="&lt;div style=&quot;font-size:14px&quot;&gt;&lt;b&gt;PESSOA&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:20px&quot;&gt;&lt;b&gt;Administrador&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px&quot;&gt;Gerencia usuários, perfis&lt;br&gt;e permissões&lt;/div&gt;" vertex="1">
+          <mxGeometry height="140" width="300" x="55" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#94a3b8;strokeWidth=2;dashed=1;fontColor=#334155;fontFamily=Arial;align=left;verticalAlign=top;spacingLeft=16;spacingTop=12;arcSize=10;" value="&lt;div style=&quot;font-size:18px&quot;&gt;&lt;b&gt;MentorIA Acadêmica&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px&quot;&gt;Boundary do sistema de software&lt;/div&gt;" vertex="1">
+          <mxGeometry height="740" width="1180" x="420" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#145ac1;strokeColor=#0b3c8b;strokeWidth=3;fontColor=#ffffff;fontFamily=Arial;align=center;verticalAlign=middle;spacing=14;arcSize=12;" value="&lt;div style=&quot;font-size:14px&quot;&gt;&lt;b&gt;CONTÊINER&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:22px&quot;&gt;&lt;b&gt;Aplicação Web (Frontend)&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px&quot;&gt;HTML5, CSS3, JavaScript e Bootstrap 5.3&lt;br&gt;Permite navegação, cadastro, login,&lt;br&gt;busca de mentores e solicitação de agendamentos&lt;/div&gt;" vertex="1">
+          <mxGeometry height="170" width="360" x="560" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="backend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#145ac1;strokeColor=#0b3c8b;strokeWidth=3;fontColor=#ffffff;fontFamily=Arial;align=center;verticalAlign=middle;spacing=14;arcSize=12;" value="&lt;div style=&quot;font-size:14px&quot;&gt;&lt;b&gt;CONTÊINER&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:22px&quot;&gt;&lt;b&gt;API Backend&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px&quot;&gt;Node.js 24 LTS + Express 5&lt;br&gt;Implementa regras de negócio, autenticação,&lt;br&gt;autorização, agendamentos e relatórios&lt;/div&gt;" vertex="1">
+          <mxGeometry height="170" width="360" x="1240" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_student_front" edge="1" parent="1" source="student" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=2;fontColor=#334155;fontSize=14;fontFamily=Arial;labelBackgroundColor=#ffffff;align=center;exitX=1;exitY=0.5;entryX=0;entryY=0.18;" target="frontend" value="Usa via navegador web">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_mentor_front" edge="1" parent="1" source="mentor" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=2;fontColor=#334155;fontSize=14;fontFamily=Arial;labelBackgroundColor=#ffffff;align=center;exitX=1;exitY=0.5;entryX=0;entryY=0.40;" target="frontend" value="Usa via navegador web">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_coord_front" edge="1" parent="1" source="coordinator" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=2;fontColor=#334155;fontSize=14;fontFamily=Arial;labelBackgroundColor=#ffffff;align=center;exitX=1;exitY=0.5;entryX=0;entryY=0.62;" target="frontend" value="Usa via navegador web">
+          <mxGeometry relative="1" x="-0.6159" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="540" y="640" />
+              <mxPoint x="540" y="360.4" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_admin_front" edge="1" parent="1" source="admin" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=2;fontColor=#334155;fontSize=14;fontFamily=Arial;labelBackgroundColor=#ffffff;align=center;exitX=1;exitY=0.5;entryX=0;entryY=0.84;exitDx=0;exitDy=0;" value="Usa via navegador web" target="frontend">
+          <mxGeometry relative="1" x="-0.0005" as="geometry">
+            <mxPoint x="380" y="856.1" as="sourcePoint" />
+            <mxPoint x="595" y="423.9000000000002" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_front_back" edge="1" parent="1" source="frontend" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=2;fontColor=#334155;fontSize=14;fontFamily=Arial;labelBackgroundColor=#ffffff;align=center;" target="backend" value="Consome API via HTTPS / REST / JSON">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_back_db" edge="1" parent="1" source="backend" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=2;fontColor=#334155;fontSize=14;fontFamily=Arial;labelBackgroundColor=#ffffff;align=center;" target="vfYv-fF0foH883Av_SqA-4" value="Lê e grava dados via SQL">
+          <mxGeometry relative="1" x="-0.0232" as="geometry">
+            <Array as="points">
+              <mxPoint x="1420" y="690" />
+              <mxPoint x="1420" y="690" />
+            </Array>
+            <mxPoint x="1185" y="654" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="footer" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#475569;fontSize=13;fontFamily=Arial;" value="&lt;b&gt;Projeto Final — Análise de Projetos e Sistemas&lt;/b&gt; | Autores: Hadson, Kennedy e Guilherme | Data: 04/11/2026" vertex="1">
+          <mxGeometry height="28" width="1160" x="365" y="922" as="geometry" />
+        </mxCell>
+        <object placeholders="1" c4Name="Banco de Dados" c4Type="Container" c4Technology="PostgreSQL" c4Description="Armazena usuários, disciplinas, disponibilidades, agendamentos, sessões e avaliações." label="&lt;font style=&quot;font-size: 16px&quot;&gt;&lt;b&gt;%c4Name%&lt;/b&gt;&lt;/font&gt;&lt;div&gt;[%c4Type%:&amp;nbsp;%c4Technology%]&lt;/div&gt;&lt;br&gt;&lt;div&gt;&lt;font style=&quot;font-size: 11px&quot;&gt;&lt;font color=&quot;#E6E6E6&quot;&gt;%c4Description%&lt;/font&gt;&lt;/div&gt;" id="vfYv-fF0foH883Av_SqA-4">
+          <mxCell parent="1" style="shape=cylinder3;size=15;whiteSpace=wrap;html=1;boundedLbl=1;rounded=0;labelBackgroundColor=none;fillColor=#145AC1;fontSize=12;fontColor=#ffffff;align=center;strokeColor=#0E7DAD;metaEdit=1;points=[[0.5,0,0],[1,0.25,0],[1,0.5,0],[1,0.75,0],[0.5,1,0],[0,0.75,0],[0,0.5,0],[0,0.25,0]];resizable=0;" vertex="1">
+            <mxGeometry height="120" width="240" x="1300" y="680" as="geometry" />
+          </mxCell>
+        </object>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,43 @@
+<mxfile host="Electron" agent="ChatGPT">
+  <diagram id="mentoria-c4-context" name="C4 - Nível 1 - Contexto">
+    <mxGraphModel dx="1704" dy="1013" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Arial;" value="&lt;div style=&quot;font-size:25px&quot;&gt;&lt;b&gt;MentorIA Acadêmica — C4 Nível 1: Contexto&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:15px;color:#475569&quot;&gt;Visão do sistema e dos quatro perfis que interagem com ele&lt;/div&gt;" vertex="1">
+          <mxGeometry height="85" width="1130" x="235" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="student" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf3ff;strokeColor=#2563eb;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=center;verticalAlign=middle;spacing=12;shadow=0;arcSize=12;" value="&lt;div style=&quot;font-size:14px&quot;&gt;&lt;b&gt;PESSOA&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:21px&quot;&gt;&lt;b&gt;Estudante&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px&quot;&gt;Busca mentores, solicita horários&lt;br&gt;e avalia sessões concluídas&lt;/div&gt;" vertex="1">
+          <mxGeometry height="150" width="340" x="90" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="mentor" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf3ff;strokeColor=#2563eb;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=center;verticalAlign=middle;spacing=12;shadow=0;arcSize=12;" value="&lt;div style=&quot;font-size:14px&quot;&gt;&lt;b&gt;PESSOA&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:21px&quot;&gt;&lt;b&gt;Mentor&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px&quot;&gt;Disponibiliza horários, confirma&lt;br&gt;ou recusa solicitações&lt;/div&gt;" vertex="1">
+          <mxGeometry height="150" width="340" x="1170" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="coordinator" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf3ff;strokeColor=#2563eb;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=center;verticalAlign=middle;spacing=12;shadow=0;arcSize=12;" value="&lt;div style=&quot;font-size:14px&quot;&gt;&lt;b&gt;PESSOA&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:21px&quot;&gt;&lt;b&gt;Coordenador&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px&quot;&gt;Acompanha atividades&lt;br&gt;e consulta relatórios&lt;/div&gt;" vertex="1">
+          <mxGeometry height="150" width="340" x="90" y="615" as="geometry" />
+        </mxCell>
+        <mxCell id="admin" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf3ff;strokeColor=#2563eb;strokeWidth=2;fontColor=#183b70;fontFamily=Arial;align=center;verticalAlign=middle;spacing=12;shadow=0;arcSize=12;" value="&lt;div style=&quot;font-size:14px&quot;&gt;&lt;b&gt;PESSOA&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:21px&quot;&gt;&lt;b&gt;Administrador&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:13px&quot;&gt;Gerencia usuários, perfis&lt;br&gt;e permissões&lt;/div&gt;" vertex="1">
+          <mxGeometry height="150" width="340" x="1170" y="615" as="geometry" />
+        </mxCell>
+        <mxCell id="system" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#145ac1;strokeColor=#0b3c8b;strokeWidth=3;fontColor=#ffffff;fontFamily=Arial;align=center;verticalAlign=middle;spacing=15;shadow=0;arcSize=12;" value="&lt;div style=&quot;font-size:15px&quot;&gt;&lt;b&gt;SISTEMA DE SOFTWARE&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:25px&quot;&gt;&lt;b&gt;MentorIA Acadêmica&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:14px&quot;&gt;Gerenciamento de mentorias acadêmicas&lt;br&gt;Busca, disponibilidade, agendamento,&lt;br&gt;acompanhamento e avaliações&lt;/div&gt;" vertex="1">
+          <mxGeometry height="200" width="430" x="585" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_student" edge="1" parent="1" source="student" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=2;fontColor=#334155;fontSize=14;fontFamily=Arial;labelBackgroundColor=#ffffff;align=center;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.26;entryDx=0;entryDy=0;" target="system" value="Busca mentores&lt;br&gt;e solicita agendamento">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_mentor" edge="1" parent="1" source="mentor" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=2;fontColor=#334155;fontSize=14;fontFamily=Arial;labelBackgroundColor=#ffffff;align=center;exitX=0;exitY=0.7;exitDx=0;exitDy=0;entryX=1;entryY=0.26;entryDx=0;entryDy=0;" target="system" value="Gerencia horários&lt;br&gt;e solicitações">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_coordinator" edge="1" parent="1" source="coordinator" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=2;fontColor=#334155;fontSize=14;fontFamily=Arial;labelBackgroundColor=#ffffff;align=center;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.74;entryDx=0;entryDy=0;" target="system" value="Consulta relatórios&lt;br&gt;e atividades">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin" edge="1" parent="1" source="admin" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=2;fontColor=#334155;fontSize=14;fontFamily=Arial;labelBackgroundColor=#ffffff;align=center;exitX=0;exitY=0.3;exitDx=0;exitDy=0;entryX=1;entryY=0.74;entryDx=0;entryDy=0;" target="system" value="Gerencia usuários&lt;br&gt;e permissões">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="footer" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#475569;fontSize=13;fontFamily=Arial;" value="&lt;b&gt;Projeto Final — Análise de Projetos e Sistemas&lt;/b&gt; | Autores: Hadson, Kennedy e Guilherme | Data: 04/11/2026" vertex="1">
+          <mxGeometry height="36" width="1160" x="220" y="828" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

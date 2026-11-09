@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" agent="ChatGPT" version="24.7.17" type="device">
+  <diagram id="mentoria-uml-sequencia-agendamento" name="UML - Sequência 2 - Agendamento">
+    <mxGraphModel dx="2130" dy="1320" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2130" pageHeight="1320" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="MentorIA Acadêmica — UML: Sequência 2 (Agendamento)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=30;fontStyle=1;fontColor=#17243b;" vertex="1" parent="1">
+          <mxGeometry x="290" y="28" width="1550" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Happy path: estudante solicita um horário livre e o sistema registra como PENDENTE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=18;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="290" y="83" width="1550" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="head_0" value="&lt;div style=&quot;font-size:13px&quot;&gt;&lt;b&gt;ATOR&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:19px&quot;&gt;&lt;b&gt;Estudante&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:12px&quot;&gt;Solicita mentoria&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf3ff;strokeColor=#2563eb;strokeWidth=2;fontColor=#173b77;fontFamily=Arial;align=center;verticalAlign=middle;spacing=8;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="10" y="156" width="270" height="99" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_0" value="" style="endArrow=none;startArrow=none;html=1;strokeColor=#94a3b8;strokeWidth=1.6;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="145" y="255" as="sourcePoint" />
+            <mxPoint x="145" y="1153" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="head_1" value="&lt;div style=&quot;font-size:13px&quot;&gt;&lt;b&gt;INTERFACE WEB&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:19px&quot;&gt;&lt;b&gt;Frontend&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:12px&quot;&gt;JS + Bootstrap&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#145ac1;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#ffffff;fontFamily=Arial;align=center;verticalAlign=middle;spacing=8;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="310" y="156" width="270" height="99" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_1" value="" style="endArrow=none;startArrow=none;html=1;strokeColor=#94a3b8;strokeWidth=1.6;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="445" y="255" as="sourcePoint" />
+            <mxPoint x="445" y="1153" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="head_2" value="&lt;div style=&quot;font-size:13px&quot;&gt;&lt;b&gt;CONTROLLER&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:19px&quot;&gt;&lt;b&gt;AgendamentoController&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:12px&quot;&gt;Express 5&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#145ac1;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#ffffff;fontFamily=Arial;align=center;verticalAlign=middle;spacing=8;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="610" y="156" width="270" height="99" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_2" value="" style="endArrow=none;startArrow=none;html=1;strokeColor=#94a3b8;strokeWidth=1.6;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="745" y="255" as="sourcePoint" />
+            <mxPoint x="745" y="1153" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="head_3" value="&lt;div style=&quot;font-size:13px&quot;&gt;&lt;b&gt;SERVIÇO&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:19px&quot;&gt;&lt;b&gt;AgendamentoService&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:12px&quot;&gt;Regra de negócio&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#145ac1;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#ffffff;fontFamily=Arial;align=center;verticalAlign=middle;spacing=8;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="910" y="156" width="270" height="99" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_3" value="" style="endArrow=none;startArrow=none;html=1;strokeColor=#94a3b8;strokeWidth=1.6;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1045" y="255" as="sourcePoint" />
+            <mxPoint x="1045" y="1153" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="head_4" value="&lt;div style=&quot;font-size:13px&quot;&gt;&lt;b&gt;REPOSITÓRIO&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:19px&quot;&gt;&lt;b&gt;DisponibilidadeRepository&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:12px&quot;&gt;Consulta horários&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#145ac1;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#ffffff;fontFamily=Arial;align=center;verticalAlign=middle;spacing=8;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1210" y="156" width="270" height="99" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_4" value="" style="endArrow=none;startArrow=none;html=1;strokeColor=#94a3b8;strokeWidth=1.6;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1345" y="255" as="sourcePoint" />
+            <mxPoint x="1345" y="1153" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="head_5" value="&lt;div style=&quot;font-size:13px&quot;&gt;&lt;b&gt;REPOSITÓRIO&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:19px&quot;&gt;&lt;b&gt;AgendamentoRepository&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:12px&quot;&gt;Registra solicitações&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#145ac1;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#ffffff;fontFamily=Arial;align=center;verticalAlign=middle;spacing=8;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1510" y="156" width="270" height="99" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_5" value="" style="endArrow=none;startArrow=none;html=1;strokeColor=#94a3b8;strokeWidth=1.6;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1645" y="255" as="sourcePoint" />
+            <mxPoint x="1645" y="1153" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="head_6" value="&lt;div style=&quot;font-size:13px&quot;&gt;&lt;b&gt;BANCO DE DADOS&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:19px&quot;&gt;&lt;b&gt;PostgreSQL&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size:12px&quot;&gt;Dados persistentes&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#145ac1;strokeColor=#0b3c8b;strokeWidth=2;fontColor=#ffffff;fontFamily=Arial;align=center;verticalAlign=middle;spacing=8;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1810" y="156" width="270" height="99" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_6" value="" style="endArrow=none;startArrow=none;html=1;strokeColor=#94a3b8;strokeWidth=1.6;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1945" y="255" as="sourcePoint" />
+            <mxPoint x="1945" y="1153" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_1" value="" style="endArrow=block;endFill=1;startArrow=none;html=1;strokeColor=#475569;strokeWidth=2.3;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="145" y="295" as="sourcePoint" />
+            <mxPoint x="445" y="295" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_1" value="1. Seleciona mentor e horário" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#26384d;" vertex="1" parent="1">
+          <mxGeometry x="151.0" y="263" width="288" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="msg_2" value="" style="endArrow=block;endFill=1;startArrow=none;html=1;strokeColor=#475569;strokeWidth=2.3;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="445" y="357" as="sourcePoint" />
+            <mxPoint x="745" y="357" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_2" value="2. POST /api/agendamentos + JWT" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#26384d;" vertex="1" parent="1">
+          <mxGeometry x="451.0" y="325" width="288" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="msg_3" value="" style="endArrow=block;endFill=1;startArrow=none;html=1;strokeColor=#475569;strokeWidth=2.3;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="745" y="419" as="sourcePoint" />
+            <mxPoint x="1045" y="419" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_3" value="3. solicitar(estudanteId, horarioId)" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#26384d;" vertex="1" parent="1">
+          <mxGeometry x="751.0" y="387" width="288" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="msg_4" value="" style="endArrow=block;endFill=1;startArrow=none;html=1;strokeColor=#475569;strokeWidth=2.3;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1045" y="481" as="sourcePoint" />
+            <mxPoint x="1345" y="481" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_4" value="4. buscarPorId(horarioId)" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#26384d;" vertex="1" parent="1">
+          <mxGeometry x="1051.0" y="449" width="288" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="msg_5" value="" style="endArrow=block;endFill=1;startArrow=none;html=1;strokeColor=#475569;strokeWidth=2.3;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1345" y="543" as="sourcePoint" />
+            <mxPoint x="1945" y="543" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_5" value="5. BEGIN; SELECT disponibilidade FOR UPDATE" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#26384d;" vertex="1" parent="1">
+          <mxGeometry x="1360.0" y="511" width="570" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="msg_6" value="" style="endArrow=open;endFill=0;startArrow=none;html=1;strokeColor=#64748b;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1945" y="605" as="sourcePoint" />
+            <mxPoint x="1345" y="605" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_6" value="6. Horário e mentor" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#26384d;" vertex="1" parent="1">
+          <mxGeometry x="1360.0" y="573" width="570" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="msg_7" value="" style="endArrow=open;endFill=0;startArrow=none;html=1;strokeColor=#64748b;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1345" y="667" as="sourcePoint" />
+            <mxPoint x="1045" y="667" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_7" value="7. Disponibilidade livre" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#26384d;" vertex="1" parent="1">
+          <mxGeometry x="1051.0" y="635" width="288" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="msg_8" value="" style="endArrow=block;endFill=1;startArrow=none;html=1;strokeColor=#475569;strokeWidth=2.3;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1045" y="729" as="sourcePoint" />
+            <mxPoint x="1645" y="729" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_8" value="8. criarPendente(estudante, horário)" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#26384d;" vertex="1" parent="1">
+          <mxGeometry x="1060.0" y="697" width="570" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="msg_9" value="" style="endArrow=block;endFill=1;startArrow=none;html=1;strokeColor=#475569;strokeWidth=2.3;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1645" y="791" as="sourcePoint" />
+            <mxPoint x="1945" y="791" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_9" value="9. INSERT PENDENTE; COMMIT" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#26384d;" vertex="1" parent="1">
+          <mxGeometry x="1651.0" y="759" width="288" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="msg_10" value="" style="endArrow=open;endFill=0;startArrow=none;html=1;strokeColor=#64748b;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1945" y="853" as="sourcePoint" />
+            <mxPoint x="1645" y="853" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_10" value="10. ID e status PENDENTE" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#26384d;" vertex="1" parent="1">
+          <mxGeometry x="1651.0" y="821" width="288" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="msg_11" value="" style="endArrow=open;endFill=0;startArrow=none;html=1;strokeColor=#64748b;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1645" y="915" as="sourcePoint" />
+            <mxPoint x="1045" y="915" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_11" value="11. Agendamento registrado" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#26384d;" vertex="1" parent="1">
+          <mxGeometry x="1060.0" y="883" width="570" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="msg_12" value="" style="endArrow=open;endFill=0;startArrow=none;html=1;strokeColor=#64748b;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1045" y="977" as="sourcePoint" />
+            <mxPoint x="745" y="977" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_12" value="12. Resultado da solicitação" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#26384d;" vertex="1" parent="1">
+          <mxGeometry x="751.0" y="945" width="288" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="msg_13" value="" style="endArrow=open;endFill=0;startArrow=none;html=1;strokeColor=#64748b;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="745" y="1039" as="sourcePoint" />
+            <mxPoint x="445" y="1039" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_13" value="13. HTTP 201 + status PENDENTE" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#26384d;" vertex="1" parent="1">
+          <mxGeometry x="451.0" y="1007" width="288" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="msg_14" value="" style="endArrow=open;endFill=0;startArrow=none;html=1;strokeColor=#64748b;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="445" y="1101" as="sourcePoint" />
+            <mxPoint x="145" y="1101" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_14" value="14. Solicitação registrada" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#26384d;" vertex="1" parent="1">
+          <mxGeometry x="151.0" y="1069" width="288" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="REGRA DE NEGÓCIO: uma disponibilidade só pode ter uma solicitação ativa por vez. O INSERT deve ser protegido por transação e restrição de unicidade no PostgreSQL." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#93c5fd;strokeWidth=1.5;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=16;fontColor=#1e3a8a;" vertex="1" parent="1">
+          <mxGeometry x="165" y="1175" width="1800" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="note2" value="Após a solicitação, o status é PENDENTE. O mentor poderá confirmar ou recusar posteriormente; isso não ocorre automaticamente." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=15;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="165" y="1222" width="1800" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="footer" value="Projeto Final — Análise de Projetos e Sistemas | Autores: Hadson, Kennedy e Guilherme | 05/11/2026" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=15;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1275" width="1330" height="28" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

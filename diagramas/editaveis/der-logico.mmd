@@ -1,0 +1,98 @@
+---
+title: "MentorIA Acadêmica — Modelo Lógico (PostgreSQL) · Hadson, Kennedy e Guilherme · 08/11/2026"
+---
+erDiagram
+    usuarios ||--o| perfis_mentor : "perfil de"
+    usuarios ||--o{ mentor_disciplinas : "mentor"
+    disciplinas ||--o{ mentor_disciplinas : "disciplina"
+    usuarios ||--o{ disponibilidades : "mentor"
+    disponibilidades ||--o{ agendamentos : "reserva (1 ativa)"
+    usuarios ||--o{ agendamentos : "estudante / mentor"
+    disciplinas ||--o{ agendamentos : "disciplina"
+    agendamentos ||--o| sessoes_mentoria : "CONCLUIDO"
+    sessoes_mentoria ||--o| avaliacoes : "compareceu"
+    usuarios ||--o{ notificacoes : "destinatário"
+    agendamentos |o--o{ notificacoes : "referência"
+    usuarios ||--o{ logs_auditoria : "administrador"
+    agendamentos {
+        bigint id PK,UK
+        bigint disponibilidade_id FK "NOT NULL"
+        bigint estudante_id FK "NOT NULL"
+        bigint mentor_id FK "NOT NULL"
+        bigint disciplina_id FK "NOT NULL"
+        timestamptz inicio_em FK "NOT NULL"
+        integer duracao_minutos FK "NOT NULL"
+        varchar status UK "NOT NULL"
+        varchar observacao
+        varchar justificativa
+        timestamptz criado_em "NOT NULL"
+        timestamptz respondido_em
+    }
+    avaliacoes {
+        bigint id PK
+        bigint sessao_id FK,UK "NOT NULL"
+        boolean sessao_compareceu FK "NOT NULL"
+        smallint nota "NOT NULL"
+        varchar comentario
+        timestamptz criado_em "NOT NULL"
+    }
+    disciplinas {
+        bigint id PK
+        varchar codigo UK "NOT NULL"
+        varchar nome "NOT NULL"
+        boolean ativa "NOT NULL"
+    }
+    disponibilidades {
+        bigint id PK,UK
+        bigint mentor_id FK,UK "NOT NULL"
+        timestamptz inicio_em UK "NOT NULL"
+        integer duracao_minutos UK "NOT NULL"
+        boolean ativa "NOT NULL"
+        timestamptz criado_em "NOT NULL"
+    }
+    logs_auditoria {
+        bigint id PK
+        bigint administrador_id FK "NOT NULL"
+        varchar acao "NOT NULL"
+        varchar tipo_alvo "NOT NULL"
+        bigint alvo_id "NOT NULL"
+        timestamptz criado_em "NOT NULL"
+    }
+    mentor_disciplinas {
+        bigint mentor_id FK,PK
+        bigint disciplina_id FK,PK
+    }
+    notificacoes {
+        bigint id PK
+        bigint usuario_id FK "NOT NULL"
+        bigint agendamento_id FK
+        varchar mensagem "NOT NULL"
+        boolean lida "NOT NULL"
+        timestamptz criado_em "NOT NULL"
+    }
+    perfis_mentor {
+        bigint usuario_id FK,PK
+        varchar biografia
+        varchar formacao
+        varchar contato_sessao
+    }
+    sessoes_mentoria {
+        bigint id PK,UK
+        bigint agendamento_id FK,UK "NOT NULL"
+        varchar status_agendamento FK "NOT NULL"
+        boolean compareceu UK "NOT NULL"
+        integer duracao_real_min
+        varchar observacoes
+        timestamptz registrado_em "NOT NULL"
+    }
+    usuarios {
+        bigint id PK
+        varchar nome "NOT NULL"
+        varchar email UK "NOT NULL"
+        varchar senha_hash "NOT NULL"
+        varchar perfil "NOT NULL"
+        boolean ativo "NOT NULL"
+        timestamptz aceite_privacidade_em "NOT NULL"
+        timestamptz criado_em "NOT NULL"
+        timestamptz atualizado_em "NOT NULL"
+    }

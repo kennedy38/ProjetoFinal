@@ -1,0 +1,1296 @@
+openapi: 3.0.3
+info:
+  title: MentorIA Acadêmica — API REST
+  version: 1.0.0
+  description: |
+    Contrato da API REST do **MentorIA Acadêmica** (Bloco 8 — Documentação do Desenvolvedor).
+
+    **Equipe:** Hadson, Kennedy e Guilherme · **Responsável:** Guilherme · **Data:** 08/11/2026
+
+    > Contrato de **projeto**. A aplicação ainda **não foi implementada**; este arquivo orienta a
+    > implementação futura e os testes de integração (node:test + Supertest).
+
+    ### Convenções
+    - Todas as rotas ficam sob `/api` e trocam **JSON** (UTF-8), sempre via **HTTPS** (Nginx).
+    - Autenticação por **JWT Bearer** com validade de **15 minutos** e sem *refresh token*. A cada
+      requisição, o backend consulta de novo se o usuário está `ativo` e qual é o seu `perfil`.
+    - Autorização **RBAC**: cada operação lista os perfis permitidos em `x-perfis-permitidos`.
+      Regras de **titularidade** (ex.: só o mentor do agendamento confirma) aparecem na descrição.
+    - Datas e horas em ISO 8601 com fuso (`2026-11-10T14:00:00-03:00`); o servidor grava em UTC.
+    - Nomes em `camelCase` no JSON e `snake_case` no banco (`inicioEm` ↔ `inicio_em`).
+    - Erros seguem o schema `Erro`. **409 Conflict** indica conflito com o estado atual
+      (horário ocupado, sobreposição, transição inválida, avaliação duplicada, último administrador).
+  contact:
+    name: Equipe MentorIA Acadêmica (Hadson, Kennedy e Guilherme)
+servers:
+  - url: http://localhost:3000
+    description: Desenvolvimento local
+  - url: https://staging.{dominio}
+    description: Staging (AWS Lightsail 1 GB)
+    variables:
+      dominio:
+        default: mentoria-academica.com.br
+  - url: https://{dominio}
+    description: Produção (AWS Lightsail 2 GB)
+    variables:
+      dominio:
+        default: mentoria-academica.com.br
+security:
+  - bearerAuth: []
+tags:
+  - name: Autenticação
+  - name: Usuários
+  - name: Mentores
+  - name: Disciplinas
+  - name: Disponibilidades
+  - name: Agendamentos
+  - name: Sessões
+  - name: Avaliações
+  - name: Notificações
+  - name: Coordenação
+  - name: Administração
+
+paths:
+  # ------------------------------------------------------------------ Autenticação
+  /api/auth/login:
+    post:
+      tags: [Autenticação]
+      summary: Autenticar e obter JWT (RF002)
+      operationId: login
+      security: []
+      x-perfis-permitidos: [PUBLICO]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequisicao' }
+            example: { email: ana@universidade.edu.br, senha: 'S3nh@Forte!' }
+      responses:
+        '200':
+          description: Autenticado. Token válido por 15 minutos.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LoginResposta' }
+        '401':
+          description: Credenciais inválidas ou usuário inativo (mensagem genérica, sem revelar qual dos dois).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Erro' }
+        '422': { $ref: '#/components/responses/DadosInvalidos' }
+        '429':
+          description: Muitas tentativas de login; tente novamente mais tarde.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Erro' }
+
+  /api/auth/me:
+    get:
+      tags: [Autenticação]
+      summary: Dados do usuário autenticado
+      operationId: obterUsuarioAutenticado
+      x-perfis-permitidos: [ESTUDANTE, MENTOR, COORDENADOR, ADMINISTRADOR]
+      responses:
+        '200':
+          description: Usuário do token.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Usuario' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+
+  # ------------------------------------------------------------------ Usuários
+  /api/usuarios:
+    post:
+      tags: [Usuários]
+      summary: Cadastrar usuário (RF001)
+      description: |
+        Cadastro público com aceite obrigatório da política de privacidade (LGPD).
+        Somente estudantes podem realizar autocadastro: o backend atribui `ESTUDANTE` (RF001),
+        ignorando/rejeitando qualquer tentativa de escolher perfil. Mentores e coordenadores
+        são criados por administrador no endpoint administrativo (RF004–RF005).
+      operationId: cadastrarUsuario
+      security: []
+      x-perfis-permitidos: [PUBLICO]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UsuarioCadastro' }
+      responses:
+        '201':
+          description: Usuário criado.
+          headers:
+            Location:
+              schema: { type: string }
+              description: URL do recurso criado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Usuario' }
+        '409':
+          description: E-mail já cadastrado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Erro' }
+              example: { codigo: EMAIL_JA_CADASTRADO, mensagem: Já existe uma conta com este e-mail. }
+        '422': { $ref: '#/components/responses/DadosInvalidos' }
+
+  /api/usuarios/me:
+    get:
+      tags: [Usuários]
+      summary: Consultar os próprios dados (direito de acesso — LGPD)
+      operationId: obterMeusDados
+      x-perfis-permitidos: [ESTUDANTE, MENTOR, COORDENADOR, ADMINISTRADOR]
+      responses:
+        '200':
+          description: Dados do titular.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Usuario' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+    patch:
+      tags: [Usuários]
+      summary: Corrigir os próprios dados (nome ou senha)
+      operationId: atualizarMeusDados
+      x-perfis-permitidos: [ESTUDANTE, MENTOR, COORDENADOR, ADMINISTRADOR]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UsuarioAtualizacao' }
+      responses:
+        '200':
+          description: Dados atualizados.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Usuario' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '422': { $ref: '#/components/responses/DadosInvalidos' }
+
+  # ------------------------------------------------------------------ Mentores
+  /api/mentores:
+    get:
+      tags: [Mentores]
+      summary: Buscar mentores, com filtro por disciplina e paginação (RF010)
+      operationId: buscarMentores
+      x-perfis-permitidos: [ESTUDANTE, MENTOR, COORDENADOR, ADMINISTRADOR]
+      parameters:
+        - name: disciplinaId
+          in: query
+          schema: { type: integer, format: int64, minimum: 1 }
+        - name: nome
+          in: query
+          description: Trecho do nome do mentor.
+          schema: { type: string, maxLength: 120 }
+        - $ref: '#/components/parameters/Pagina'
+        - $ref: '#/components/parameters/TamanhoPagina'
+      responses:
+        '200':
+          description: Página de mentores ativos.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PaginaMentores' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '422': { $ref: '#/components/responses/DadosInvalidos' }
+
+  /api/mentores/{id}:
+    get:
+      tags: [Mentores]
+      summary: Detalhar mentor (perfil, disciplinas e média de avaliações)
+      operationId: obterMentor
+      x-perfis-permitidos: [ESTUDANTE, MENTOR, COORDENADOR, ADMINISTRADOR]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Mentor encontrado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MentorDetalhe' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+
+  /api/mentores/{id}/disponibilidades:
+    get:
+      tags: [Mentores, Disponibilidades]
+      summary: Consultar disponibilidades futuras de um mentor (RF011)
+      operationId: listarDisponibilidadesDoMentor
+      x-perfis-permitidos: [ESTUDANTE, MENTOR, COORDENADOR, ADMINISTRADOR]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/De'
+        - $ref: '#/components/parameters/Ate'
+        - name: somenteLivres
+          in: query
+          description: Se `true`, omite horários com agendamento ativo.
+          schema: { type: boolean, default: true }
+      responses:
+        '200':
+          description: Lista de disponibilidades ativas.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Disponibilidade' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+
+  /api/mentores/me/perfil:
+    put:
+      tags: [Mentores]
+      summary: Criar ou atualizar o perfil do mentor (RF006)
+      operationId: salvarPerfilMentor
+      x-perfis-permitidos: [MENTOR]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PerfilMentor' }
+      responses:
+        '200':
+          description: Perfil salvo.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PerfilMentor' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '422': { $ref: '#/components/responses/DadosInvalidos' }
+
+  /api/mentores/me/disciplinas:
+    post:
+      tags: [Mentores, Disciplinas]
+      summary: Vincular-se a uma disciplina do catálogo (RF007)
+      operationId: vincularDisciplina
+      x-perfis-permitidos: [MENTOR]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [disciplinaId]
+              properties:
+                disciplinaId: { type: integer, format: int64, minimum: 1 }
+      responses:
+        '201':
+          description: Vínculo criado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Disciplina' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409': { $ref: '#/components/responses/Conflito' }
+
+  /api/mentores/me/disciplinas/{disciplinaId}:
+    delete:
+      tags: [Mentores, Disciplinas]
+      summary: Remover vínculo com disciplina
+      operationId: desvincularDisciplina
+      x-perfis-permitidos: [MENTOR]
+      parameters:
+        - name: disciplinaId
+          in: path
+          required: true
+          schema: { type: integer, format: int64, minimum: 1 }
+      responses:
+        '204': { description: Vínculo removido. }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+
+  # ------------------------------------------------------------------ Disciplinas
+  /api/disciplinas:
+    get:
+      tags: [Disciplinas]
+      summary: Listar disciplinas do catálogo
+      operationId: listarDisciplinas
+      x-perfis-permitidos: [ESTUDANTE, MENTOR, COORDENADOR, ADMINISTRADOR]
+      parameters:
+        - name: ativa
+          in: query
+          schema: { type: boolean, default: true }
+      responses:
+        '200':
+          description: Disciplinas.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Disciplina' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+
+  # ------------------------------------------------------------------ Disponibilidades
+  /api/disponibilidades:
+    post:
+      tags: [Disponibilidades]
+      summary: Mentor oferece um horário
+      description: Retorna **409** se o horário se sobrepõe a outra disponibilidade ativa do mesmo mentor.
+      operationId: criarDisponibilidade
+      x-perfis-permitidos: [MENTOR]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DisponibilidadeNova' }
+      responses:
+        '201':
+          description: Disponibilidade criada.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Disponibilidade' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '409':
+          description: Sobreposição com outra disponibilidade ativa do mentor.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Erro' }
+              example: { codigo: HORARIO_SOBREPOSTO, mensagem: Você já oferece um horário que se sobrepõe a este., regra: ex_disponibilidades_mentor_sem_sobreposicao }
+        '422': { $ref: '#/components/responses/DadosInvalidos' }
+
+  /api/disponibilidades/minhas:
+    get:
+      tags: [Disponibilidades]
+      summary: Listar as disponibilidades do mentor autenticado
+      operationId: listarMinhasDisponibilidades
+      x-perfis-permitidos: [MENTOR]
+      parameters:
+        - $ref: '#/components/parameters/De'
+        - $ref: '#/components/parameters/Ate'
+      responses:
+        '200':
+          description: Disponibilidades do mentor.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Disponibilidade' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+
+  /api/disponibilidades/{id}:
+    patch:
+      tags: [Disponibilidades]
+      summary: Editar ou inativar uma disponibilidade (RF009)
+      description: |
+        Somente o mentor titular pode alterar. Sem agendamento ativo, pode ajustar a data ou
+        duração (30, 45 ou 60 minutos), desde que a disponibilidade nunca tenha sido reservada.
+        Se já houver histórico, somente pode inativá-la e criar outra, preservando a integridade
+        temporal do histórico. Com agendamento ativo, retorna 409. Exclusão = inativação lógica.
+      operationId: desativarDisponibilidade
+      x-perfis-permitidos: [MENTOR]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              minProperties: 1
+              additionalProperties: false
+              properties:
+                inicioEm: { type: string, format: date-time }
+                duracaoMinutos: { type: integer, enum: [30, 45, 60] }
+                ativa: { type: boolean, enum: [false] }
+      responses:
+        '200':
+          description: Disponibilidade desativada.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Disponibilidade' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409': { $ref: '#/components/responses/Conflito' }
+
+  # ------------------------------------------------------------------ Agendamentos
+  /api/agendamentos:
+    post:
+      tags: [Agendamentos]
+      summary: Solicitar agendamento (RF012–RF013)
+      description: |
+        Cria um agendamento **PENDENTE**, que já reserva o horário. O mentor tem 48 horas para
+        responder; depois disso o pedido passa a **EXPIRADO** e o horário é liberado (RF014).
+
+        **409 Conflict** quando:
+        - a disponibilidade já tem agendamento ativo (`PENDENTE` ou `CONFIRMADO`);
+        - o estudante já tem reserva ativa em horário sobreposto.
+
+        Implementação: transação com `SELECT … FOR UPDATE` na disponibilidade, índice único
+        parcial e *exclusion constraint* no PostgreSQL (Bloco 5).
+      operationId: solicitarAgendamento
+      x-perfis-permitidos: [ESTUDANTE]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AgendamentoNovo' }
+            example: { disponibilidadeId: 42, disciplinaId: 3, observacao: Dúvidas sobre normalização. }
+      responses:
+        '201':
+          description: Solicitação registrada como PENDENTE.
+          headers:
+            Location:
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Agendamento' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: Horário já reservado ou reserva sobreposta do estudante.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Erro' }
+              examples:
+                horarioOcupado:
+                  value: { codigo: HORARIO_INDISPONIVEL, mensagem: Este horário acabou de ser reservado por outro estudante., regra: ux_agendamentos_disponibilidade_ativa }
+                sobreposicao:
+                  value: { codigo: RESERVA_SOBREPOSTA, mensagem: Você já tem uma reserva ativa nesse intervalo., regra: ex_agendamentos_estudante_sem_sobreposicao }
+        '422':
+          description: Horário no passado, disponibilidade ou mentor inativo, ou disciplina não atendida pelo mentor.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Erro' }
+    get:
+      tags: [Agendamentos]
+      summary: Listar agendamentos do usuário autenticado
+      description: O estudante vê os que solicitou; o mentor vê os que recebeu.
+      operationId: listarMeusAgendamentos
+      x-perfis-permitidos: [ESTUDANTE, MENTOR]
+      parameters:
+        - name: status
+          in: query
+          schema: { $ref: '#/components/schemas/StatusAgendamento' }
+        - $ref: '#/components/parameters/De'
+        - $ref: '#/components/parameters/Ate'
+        - $ref: '#/components/parameters/Pagina'
+        - $ref: '#/components/parameters/TamanhoPagina'
+      responses:
+        '200':
+          description: Página de agendamentos.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PaginaAgendamentos' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+
+  /api/agendamentos/{id}:
+    get:
+      tags: [Agendamentos]
+      summary: Detalhar agendamento
+      description: Acesso para o estudante e o mentor envolvidos e para o administrador.
+      operationId: obterAgendamento
+      x-perfis-permitidos: [ESTUDANTE, MENTOR, ADMINISTRADOR]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Agendamento.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Agendamento' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+
+  /api/agendamentos/{id}/status:
+    patch:
+      tags: [Agendamentos, Sessões]
+      summary: Confirmar, recusar, cancelar ou concluir (RF014–RF016)
+      description: |
+        | Novo status | Quem pode | Estado atual exigido | Observação |
+        |---|---|---|---|
+        | `CONFIRMADO` | mentor do agendamento | `PENDENTE` | grava `respondidoEm` |
+        | `RECUSADO` | mentor do agendamento | `PENDENTE` | `justificativa` obrigatória |
+        | `CANCELADO` | estudante ou mentor do agendamento | `PENDENTE` ou `CONFIRMADO` | estudante: somente até 2 h antes do início; mentor: justificativa obrigatória |
+        | `CONCLUIDO` | mentor do agendamento | `CONFIRMADO` | somente após o horário da sessão; exige `sessao` e cria a **SessaoMentoria** na mesma transação |
+
+        `EXPIRADO` não é aceito aqui: é aplicado pela rotina automática de 48 horas.
+        Uma transição não permitida retorna **409**. A justificativa é obrigatória para
+        RECUSADO e para CANCELADO pelo mentor; para o estudante é opcional.
+      operationId: alterarStatusAgendamento
+      x-perfis-permitidos: [ESTUDANTE, MENTOR]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AlteracaoStatus' }
+            examples:
+              confirmar: { value: { status: CONFIRMADO } }
+              recusar: { value: { status: RECUSADO, justificativa: Conflito de agenda. } }
+              concluir: { value: { status: CONCLUIDO, sessao: { compareceu: true, duracaoRealMin: 55, observacoes: Revisão de UML. } } }
+      responses:
+        '200':
+          description: Status alterado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Agendamento' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: Transição de status inválida para o estado atual.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Erro' }
+              example: { codigo: TRANSICAO_INVALIDA, mensagem: Não é possível concluir um agendamento PENDENTE., regra: rn_agendamento_transicao }
+        '422': { $ref: '#/components/responses/DadosInvalidos' }
+
+  # ------------------------------------------------------------------ Sessões e avaliações
+  /api/agendamentos/{id}/sessao:
+    get:
+      tags: [Sessões]
+      summary: Consultar a sessão registrada de um agendamento
+      operationId: obterSessaoDoAgendamento
+      x-perfis-permitidos: [ESTUDANTE, MENTOR, ADMINISTRADOR]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Sessão de mentoria.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SessaoMentoria' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+
+  /api/sessoes/{id}/avaliacao:
+    post:
+      tags: [Avaliações]
+      summary: Avaliar sessão concluída (nota de 1 a 5)
+      description: |
+        Somente o **estudante do agendamento** pode avaliar, e somente se `compareceu = true`.
+        **409** se a sessão já foi avaliada ou se não houve comparecimento.
+      operationId: avaliarSessao
+      x-perfis-permitidos: [ESTUDANTE]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AvaliacaoNova' }
+            example: { nota: 5, comentario: Explicação muito clara. }
+      responses:
+        '201':
+          description: Avaliação registrada.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Avaliacao' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: Sessão já avaliada ou sem comparecimento.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Erro' }
+              example: { codigo: AVALIACAO_DUPLICADA, mensagem: Esta sessão já foi avaliada., regra: uq_avaliacoes_sessao }
+        '422': { $ref: '#/components/responses/DadosInvalidos' }
+
+  # ------------------------------------------------------------------ Notificações (Could)
+  /api/notificacoes:
+    get:
+      tags: [Notificações]
+      summary: Listar notificações internas (RF018 — Could)
+      operationId: listarNotificacoes
+      x-perfis-permitidos: [ESTUDANTE, MENTOR, COORDENADOR, ADMINISTRADOR]
+      parameters:
+        - name: lida
+          in: query
+          schema: { type: boolean }
+        - $ref: '#/components/parameters/Pagina'
+        - $ref: '#/components/parameters/TamanhoPagina'
+      responses:
+        '200':
+          description: Notificações do usuário.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Notificacao' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+
+  /api/notificacoes/{id}:
+    patch:
+      tags: [Notificações]
+      summary: Marcar notificação como lida
+      operationId: marcarNotificacaoLida
+      x-perfis-permitidos: [ESTUDANTE, MENTOR, COORDENADOR, ADMINISTRADOR]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [lida]
+              properties:
+                lida: { type: boolean, enum: [true] }
+      responses:
+        '200':
+          description: Notificação atualizada.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Notificacao' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+
+  # ------------------------------------------------------------------ Coordenação
+  /api/coordenacao/mentorias:
+    get:
+      tags: [Coordenação]
+      summary: Acompanhar mentorias (RF019)
+      description: Lê `vw_mentorias_coordenacao`, que **não identifica o estudante** (LGPD).
+      operationId: acompanharMentorias
+      x-perfis-permitidos: [COORDENADOR, ADMINISTRADOR]
+      parameters:
+        - name: status
+          in: query
+          schema: { $ref: '#/components/schemas/StatusAgendamento' }
+        - name: disciplinaId
+          in: query
+          schema: { type: integer, format: int64 }
+        - name: mentorId
+          in: query
+          schema: { type: integer, format: int64 }
+        - $ref: '#/components/parameters/De'
+        - $ref: '#/components/parameters/Ate'
+        - $ref: '#/components/parameters/Pagina'
+        - $ref: '#/components/parameters/TamanhoPagina'
+      responses:
+        '200':
+          description: Página de mentorias filtradas.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PaginaMentoriasCoordenacao' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+
+  /api/coordenacao/relatorios:
+    get:
+      tags: [Coordenação]
+      summary: Relatório agregado de mentorias e avaliações (RF020), JSON ou CSV
+      operationId: gerarRelatorio
+      x-perfis-permitidos: [COORDENADOR, ADMINISTRADOR]
+      parameters:
+        - $ref: '#/components/parameters/De'
+        - $ref: '#/components/parameters/Ate'
+        - name: disciplinaId
+          in: query
+          schema: { type: integer, format: int64 }
+        - name: formato
+          in: query
+          description: Retorno em JSON (padrão) ou exportação CSV, com os mesmos indicadores.
+          schema: { type: string, enum: [json, csv], default: json }
+      responses:
+        '200':
+          description: Indicadores agregados (sem dados individuais de estudantes), no formato solicitado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Relatorio' }
+            text/csv:
+              schema: { type: string }
+              example: "periodo,totalSessoes,mediaNota\n2027-03,15,4.2\n"
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '422': { $ref: '#/components/responses/DadosInvalidos' }
+
+  # ------------------------------------------------------------------ Administração
+  /api/administracao/usuarios:
+    get:
+      tags: [Administração]
+      summary: Listar usuários
+      operationId: listarUsuarios
+      x-perfis-permitidos: [ADMINISTRADOR]
+      parameters:
+        - name: perfil
+          in: query
+          schema: { $ref: '#/components/schemas/PerfilUsuario' }
+        - name: ativo
+          in: query
+          schema: { type: boolean }
+        - name: busca
+          in: query
+          description: Trecho do nome ou do e-mail.
+          schema: { type: string, maxLength: 120 }
+        - $ref: '#/components/parameters/Pagina'
+        - $ref: '#/components/parameters/TamanhoPagina'
+      responses:
+        '200':
+          description: Página de usuários.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PaginaUsuarios' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+
+    post:
+      tags: [Administração]
+      summary: Criar usuário e atribuir perfil (RF004–RF005)
+      description: |
+        Somente ADMINISTRADOR cria contas de Mentor, Coordenador ou Administrador (também pode
+        criar Estudante). O serviço registra a ação no log de auditoria.
+        O aceite da política deve ter sido prestado pelo próprio titular em canal
+        institucional verificável; o administrador não pode consentir em nome dele.
+        Informar `aceiteTitularEm` e `referenciaAceite`, persistidos como data, origem
+        INSTITUCIONAL e referência da evidência no registro de usuário.
+        Sem aceite comprovado, rejeitar a criação com 422 (não criar conta inativa).
+        A senha temporária é transmitida por canal seguro externo, nunca em log.
+      operationId: cadastrarUsuarioAdministrativo
+      x-perfis-permitidos: [ADMINISTRADOR]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UsuarioCadastroAdministrativo' }
+      responses:
+        '201':
+          description: Usuário criado e ação auditada.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Usuario' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '409': { $ref: '#/components/responses/Conflito' }
+        '422': { $ref: '#/components/responses/DadosInvalidos' }
+
+  /api/administracao/usuarios/{id}:
+    patch:
+      tags: [Administração]
+      summary: Ativar/desativar usuário ou alterar perfil (RF004–RF005)
+      description: |
+        Ação **auditada** (`logs_auditoria`). Desativar um usuário cancela seus agendamentos ativos
+        futuros (RN07). **409** ao tentar desativar ou rebaixar o **último administrador ativo** (RN08)
+        ou ao trocar o perfil de mentor/estudante enquanto houver compromissos futuros
+        não encerrados (RN11). Antes da troca, inativar disponibilidades e resolver reservas.
+      operationId: alterarUsuario
+      x-perfis-permitidos: [ADMINISTRADOR]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AlteracaoUsuarioAdmin' }
+            example: { ativo: false }
+      responses:
+        '200':
+          description: Usuário alterado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Usuario' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: Último administrador ativo ou compromissos futuros incompatíveis com mudança de perfil.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Erro' }
+              example: { codigo: ULTIMO_ADMINISTRADOR, mensagem: Não é possível desativar o último administrador ativo., regra: rn_ultimo_administrador }
+        '422': { $ref: '#/components/responses/DadosInvalidos' }
+
+  /api/administracao/disciplinas:
+    post:
+      tags: [Administração, Disciplinas]
+      summary: Cadastrar disciplina no catálogo (RF021)
+      operationId: cadastrarDisciplina
+      x-perfis-permitidos: [ADMINISTRADOR]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DisciplinaNova' }
+      responses:
+        '201':
+          description: Disciplina criada (ação auditada).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Disciplina' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '409':
+          description: Código de disciplina já existe.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Erro' }
+        '422': { $ref: '#/components/responses/DadosInvalidos' }
+
+  /api/administracao/disciplinas/{id}:
+    patch:
+      tags: [Administração, Disciplinas]
+      summary: Editar ou desativar disciplina (RF021)
+      operationId: alterarDisciplina
+      x-perfis-permitidos: [ADMINISTRADOR]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DisciplinaAtualizacao' }
+      responses:
+        '200':
+          description: Disciplina alterada (ação auditada).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Disciplina' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '422': { $ref: '#/components/responses/DadosInvalidos' }
+
+  /api/administracao/auditoria:
+    get:
+      tags: [Administração]
+      summary: Consultar trilha de auditoria (RNF024)
+      operationId: listarAuditoria
+      x-perfis-permitidos: [ADMINISTRADOR]
+      parameters:
+        - name: administradorId
+          in: query
+          schema: { type: integer, format: int64 }
+        - name: tipoAlvo
+          in: query
+          schema: { type: string, example: USUARIO }
+        - $ref: '#/components/parameters/De'
+        - $ref: '#/components/parameters/Ate'
+        - $ref: '#/components/parameters/Pagina'
+        - $ref: '#/components/parameters/TamanhoPagina'
+      responses:
+        '200':
+          description: Registros de auditoria.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/LogAuditoria' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT assinado (HS256) com `JWT_SECRET`, validade de 15 min (`JWT_EXPIRES_IN=15m`).
+        Claims: `sub` (id do usuário) e `perfil`. O perfil é revalidado no banco a cada requisição.
+
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer, format: int64, minimum: 1 }
+    Pagina:
+      name: pagina
+      in: query
+      schema: { type: integer, minimum: 1, default: 1 }
+    TamanhoPagina:
+      name: tamanho
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 50, default: 20 }
+    De:
+      name: de
+      in: query
+      description: Início do período (ISO 8601).
+      schema: { type: string, format: date-time }
+    Ate:
+      name: ate
+      in: query
+      description: Fim do período (ISO 8601).
+      schema: { type: string, format: date-time }
+
+  responses:
+    NaoAutenticado:
+      description: Token ausente, inválido ou expirado (15 min), ou usuário desativado.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Erro' }
+          example: { codigo: NAO_AUTENTICADO, mensagem: Sessão expirada. Faça login novamente. }
+    SemPermissao:
+      description: Perfil sem permissão (RBAC) ou recurso de outro usuário (titularidade).
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Erro' }
+          example: { codigo: SEM_PERMISSAO, mensagem: Seu perfil não pode executar esta ação. }
+    NaoEncontrado:
+      description: Recurso inexistente.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Erro' }
+          example: { codigo: NAO_ENCONTRADO, mensagem: Recurso não encontrado. }
+    Conflito:
+      description: Conflito com o estado atual do recurso.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Erro' }
+    DadosInvalidos:
+      description: Corpo ou parâmetros inválidos.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Erro' }
+          example: { codigo: DADOS_INVALIDOS, mensagem: Verifique os campos informados., detalhes: [{ campo: nota, problema: deve estar entre 1 e 5 }] }
+
+  schemas:
+    PerfilUsuario:
+      type: string
+      enum: [ESTUDANTE, MENTOR, COORDENADOR, ADMINISTRADOR]
+    StatusAgendamento:
+      type: string
+      enum: [PENDENTE, CONFIRMADO, RECUSADO, CANCELADO, EXPIRADO, CONCLUIDO]
+      description: Ativos = PENDENTE e CONFIRMADO.
+
+    Erro:
+      type: object
+      required: [codigo, mensagem]
+      properties:
+        codigo: { type: string, example: HORARIO_INDISPONIVEL }
+        mensagem: { type: string }
+        regra:
+          type: string
+          description: Nome da restrição ou regra do banco que originou o erro (quando houver).
+        detalhes:
+          type: array
+          items:
+            type: object
+            properties:
+              campo: { type: string }
+              problema: { type: string }
+
+    Paginacao:
+      type: object
+      required: [pagina, tamanho, total]
+      properties:
+        pagina: { type: integer, example: 1 }
+        tamanho: { type: integer, example: 20 }
+        total: { type: integer, example: 57 }
+
+    LoginRequisicao:
+      type: object
+      required: [email, senha]
+      properties:
+        email: { type: string, format: email, maxLength: 254 }
+        senha: { type: string, format: password, minLength: 8, maxLength: 72 }
+    LoginResposta:
+      type: object
+      required: [token, tipo, expiraEm, usuario]
+      properties:
+        token: { type: string, description: JWT de acesso. }
+        tipo: { type: string, enum: [Bearer] }
+        expiraEm: { type: string, format: date-time, description: Emissão + 15 minutos. }
+        usuario: { $ref: '#/components/schemas/Usuario' }
+
+    Usuario:
+      type: object
+      required: [id, nome, email, perfil, ativo]
+      properties:
+        id: { type: integer, format: int64, readOnly: true }
+        nome: { type: string, maxLength: 120 }
+        email: { type: string, format: email }
+        perfil: { $ref: '#/components/schemas/PerfilUsuario' }
+        ativo: { type: boolean }
+        aceitePrivacidadeEm: { type: string, format: date-time }
+        aceitePrivacidadeFonte: { type: string, enum: [AUTOCADASTRO, INSTITUCIONAL] }
+        criadoEm: { type: string, format: date-time, readOnly: true }
+      description: Nunca inclui o hash da senha.
+    UsuarioCadastro:
+      type: object
+      additionalProperties: false
+      description: Autocadastro de ESTUDANTE; não aceita campo de perfil.
+      required: [nome, email, senha, aceitePrivacidade]
+      properties:
+        nome: { type: string, minLength: 2, maxLength: 120 }
+        email: { type: string, format: email, maxLength: 254 }
+        senha:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 72
+          description: Armazenada apenas como hash bcrypt (bcryptjs).
+        aceitePrivacidade:
+          type: boolean
+          enum: [true]
+          description: Precisa ser `true` (LGPD).
+    UsuarioCadastroAdministrativo:
+      type: object
+      additionalProperties: false
+      required: [nome, email, senhaTemporaria, perfil, aceiteTitularEm, referenciaAceite]
+      description: |
+        Conta criada por administrador só após aceite prévio e verificável do titular.
+        O administrador NÃO declara `aceitePrivacidade: true` em nome da pessoa.
+        Sem `aceiteTitularEm` e `referenciaAceite`, responder 422, sem criar registro.
+        Guardar `aceite_privacidade_fonte = INSTITUCIONAL` e referência no banco;
+        evidência integral fica no repositório institucional protegido.
+      properties:
+        nome: { type: string, minLength: 2, maxLength: 120 }
+        email: { type: string, format: email, maxLength: 254 }
+        senhaTemporaria: { type: string, format: password, minLength: 8, maxLength: 72 }
+        perfil: { $ref: '#/components/schemas/PerfilUsuario' }
+        aceiteTitularEm: { type: string, format: date-time, description: Data/hora do aceite efetivamente prestado pelo titular. }
+        referenciaAceite: { type: string, minLength: 6, maxLength: 120, description: Identificador verificável da evidência no repositório institucional, sem dados sensíveis. }
+    UsuarioAtualizacao:
+      type: object
+      minProperties: 1
+      properties:
+        nome: { type: string, minLength: 2, maxLength: 120 }
+        senhaAtual: { type: string, format: password }
+        novaSenha: { type: string, format: password, minLength: 8, maxLength: 72 }
+    AlteracaoUsuarioAdmin:
+      type: object
+      minProperties: 1
+      properties:
+        ativo: { type: boolean }
+        perfil: { $ref: '#/components/schemas/PerfilUsuario' }
+    PaginaUsuarios:
+      type: object
+      properties:
+        dados:
+          type: array
+          items: { $ref: '#/components/schemas/Usuario' }
+        paginacao: { $ref: '#/components/schemas/Paginacao' }
+
+    Disciplina:
+      type: object
+      required: [id, codigo, nome, ativa]
+      properties:
+        id: { type: integer, format: int64, readOnly: true }
+        codigo: { type: string, example: BD1 }
+        nome: { type: string, example: Banco de Dados I }
+        ativa: { type: boolean }
+    DisciplinaNova:
+      type: object
+      required: [codigo, nome]
+      properties:
+        codigo: { type: string, minLength: 2, maxLength: 20, pattern: '^[A-Z0-9_-]+$' }
+        nome: { type: string, minLength: 2, maxLength: 120 }
+    DisciplinaAtualizacao:
+      type: object
+      minProperties: 1
+      properties:
+        nome: { type: string, minLength: 2, maxLength: 120 }
+        ativa: { type: boolean }
+
+    PerfilMentor:
+      type: object
+      properties:
+        biografia: { type: string, maxLength: 1000 }
+        formacao: { type: string, maxLength: 255 }
+        contatoSessao:
+          type: string
+          maxLength: 255
+          description: Visível somente ao estudante com agendamento CONFIRMADO.
+    MentorResumo:
+      type: object
+      required: [id, nome]
+      properties:
+        id: { type: integer, format: int64 }
+        nome: { type: string }
+        disciplinas:
+          type: array
+          items: { $ref: '#/components/schemas/Disciplina' }
+        mediaAvaliacoes: { type: number, format: float, nullable: true, minimum: 1, maximum: 5 }
+    MentorDetalhe:
+      allOf:
+        - $ref: '#/components/schemas/MentorResumo'
+        - type: object
+          properties:
+            biografia: { type: string }
+            formacao: { type: string }
+            totalAvaliacoes: { type: integer }
+    PaginaMentores:
+      type: object
+      properties:
+        dados:
+          type: array
+          items: { $ref: '#/components/schemas/MentorResumo' }
+        paginacao: { $ref: '#/components/schemas/Paginacao' }
+
+    Disponibilidade:
+      type: object
+      required: [id, mentorId, inicioEm, duracaoMinutos, ativa]
+      properties:
+        id: { type: integer, format: int64, readOnly: true }
+        mentorId: { type: integer, format: int64 }
+        inicioEm: { type: string, format: date-time }
+        duracaoMinutos: { type: integer, enum: [30, 45, 60] }
+        fimEm: { type: string, format: date-time, readOnly: true }
+        ativa: { type: boolean }
+        livre:
+          type: boolean
+          readOnly: true
+          description: '`false` se existe agendamento ativo para o horário.'
+    DisponibilidadeNova:
+      type: object
+      required: [inicioEm, duracaoMinutos]
+      properties:
+        inicioEm: { type: string, format: date-time, description: Precisa ser futuro. }
+        duracaoMinutos: { type: integer, enum: [30, 45, 60] }
+
+    Agendamento:
+      type: object
+      required: [id, disponibilidadeId, estudanteId, mentorId, disciplinaId, inicioEm, duracaoMinutos, status, criadoEm]
+      properties:
+        id: { type: integer, format: int64, readOnly: true }
+        disponibilidadeId: { type: integer, format: int64 }
+        estudanteId: { type: integer, format: int64 }
+        mentorId: { type: integer, format: int64 }
+        disciplinaId: { type: integer, format: int64 }
+        inicioEm: { type: string, format: date-time }
+        duracaoMinutos: { type: integer }
+        status: { $ref: '#/components/schemas/StatusAgendamento' }
+        observacao: { type: string, maxLength: 500, nullable: true }
+        justificativa: { type: string, maxLength: 500, nullable: true }
+        criadoEm: { type: string, format: date-time }
+        respondidoEm: { type: string, format: date-time, nullable: true }
+        expiraEm:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+          description: criadoEm + 48 h, apenas enquanto PENDENTE.
+    AgendamentoNovo:
+      type: object
+      required: [disponibilidadeId, disciplinaId]
+      properties:
+        disponibilidadeId: { type: integer, format: int64, minimum: 1 }
+        disciplinaId: { type: integer, format: int64, minimum: 1 }
+        observacao: { type: string, maxLength: 500 }
+    AlteracaoStatus:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [CONFIRMADO, RECUSADO, CANCELADO, CONCLUIDO]
+        justificativa:
+          type: string
+          maxLength: 500
+          description: Obrigatória para RECUSADO e CANCELADO.
+        sessao:
+          $ref: '#/components/schemas/SessaoNova'
+    PaginaAgendamentos:
+      type: object
+      properties:
+        dados:
+          type: array
+          items: { $ref: '#/components/schemas/Agendamento' }
+        paginacao: { $ref: '#/components/schemas/Paginacao' }
+
+    SessaoNova:
+      type: object
+      description: Obrigatório quando status = CONCLUIDO.
+      required: [compareceu]
+      properties:
+        compareceu: { type: boolean }
+        duracaoRealMin:
+          type: integer
+          minimum: 1
+          nullable: true
+          description: Deve ser nulo quando compareceu = false.
+        observacoes: { type: string, maxLength: 2000 }
+    SessaoMentoria:
+      type: object
+      required: [id, agendamentoId, compareceu, registradoEm]
+      properties:
+        id: { type: integer, format: int64 }
+        agendamentoId: { type: integer, format: int64 }
+        compareceu: { type: boolean }
+        duracaoRealMin: { type: integer, nullable: true }
+        observacoes: { type: string, nullable: true }
+        registradoEm: { type: string, format: date-time }
+        avaliada: { type: boolean }
+
+    AvaliacaoNova:
+      type: object
+      required: [nota]
+      properties:
+        nota: { type: integer, minimum: 1, maximum: 5 }
+        comentario: { type: string, maxLength: 1000 }
+    Avaliacao:
+      type: object
+      required: [id, sessaoId, nota, criadoEm]
+      properties:
+        id: { type: integer, format: int64 }
+        sessaoId: { type: integer, format: int64 }
+        nota: { type: integer, minimum: 1, maximum: 5 }
+        comentario: { type: string, nullable: true }
+        criadoEm: { type: string, format: date-time }
+
+    Notificacao:
+      type: object
+      required: [id, mensagem, lida, criadoEm]
+      properties:
+        id: { type: integer, format: int64 }
+        agendamentoId: { type: integer, format: int64, nullable: true }
+        mensagem: { type: string, maxLength: 500 }
+        lida: { type: boolean }
+        criadoEm: { type: string, format: date-time }
+
+    MentoriaCoordenacao:
+      type: object
+      description: Linha de `vw_mentorias_coordenacao` (sem dados do estudante).
+      properties:
+        agendamentoId: { type: integer, format: int64 }
+        status: { $ref: '#/components/schemas/StatusAgendamento' }
+        inicioEm: { type: string, format: date-time }
+        duracaoMinutos: { type: integer }
+        mentorId: { type: integer, format: int64 }
+        mentorNome: { type: string }
+        disciplinaId: { type: integer, format: int64 }
+        disciplinaCodigo: { type: string }
+        disciplinaNome: { type: string }
+        compareceu: { type: boolean, nullable: true }
+        duracaoRealMin: { type: integer, nullable: true }
+        avaliada: { type: boolean }
+    PaginaMentoriasCoordenacao:
+      type: object
+      properties:
+        dados:
+          type: array
+          items: { $ref: '#/components/schemas/MentoriaCoordenacao' }
+        paginacao: { $ref: '#/components/schemas/Paginacao' }
+    Relatorio:
+      type: object
+      properties:
+        periodo:
+          type: object
+          properties:
+            de: { type: string, format: date-time }
+            ate: { type: string, format: date-time }
+        totaisPorStatus:
+          type: object
+          additionalProperties: { type: integer }
+          example: { PENDENTE: 4, CONFIRMADO: 10, CONCLUIDO: 35, RECUSADO: 3, CANCELADO: 2, EXPIRADO: 1 }
+        taxaComparecimento: { type: number, format: float, minimum: 0, maximum: 1 }
+        avaliacoesPorMentor:
+          type: array
+          items:
+            type: object
+            properties:
+              mentorId: { type: integer, format: int64 }
+              mentorNome: { type: string }
+              disciplinaId: { type: integer, format: int64 }
+              disciplinaNome: { type: string }
+              totalAvaliacoes: { type: integer }
+              mediaNota: { type: number, format: float }
+
+    LogAuditoria:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        administradorId: { type: integer, format: int64 }
+        acao: { type: string, example: DESATIVAR_USUARIO }
+        tipoAlvo: { type: string, example: USUARIO }
+        alvoId: { type: integer, format: int64 }
+        criadoEm: { type: string, format: date-time }

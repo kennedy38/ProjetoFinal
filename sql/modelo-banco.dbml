@@ -1,0 +1,247 @@
+// =====================================================================
+// MentorIA Acadêmica — Modelo lógico (DBML para dbdiagram.io)
+// Bloco 5 — Banco de Dados | Responsável: Guilherme
+// Equipe: Hadson, Kennedy e Guilherme | Versão 1.0 | 08/11/2026
+// Fonte de verdade: schema.sql. Este arquivo espelha tabelas, colunas,
+// PK, FK, UNIQUE e índices. Recursos que o DBML não representa
+// (CHECK, EXCLUDE, índice parcial, triggers, views) aparecem em Notes.
+// =====================================================================
+
+Project mentoria_academica {
+  database_type: 'PostgreSQL'
+  Note: '''
+  **MentorIA Acadêmica** — plataforma web de mentorias acadêmicas.
+  Equipe: Hadson, Kennedy e Guilherme — 08/11/2026.
+  Perfis (RBAC): ESTUDANTE, MENTOR, COORDENADOR, ADMINISTRADOR.
+  Status de agendamento: PENDENTE, CONFIRMADO, RECUSADO, CANCELADO, EXPIRADO, CONCLUIDO.
+  Reserva ativa = PENDENTE ou CONFIRMADO.
+  '''
+}
+
+// ---------------------------------------------------------------------
+// Identidade e acesso
+// ---------------------------------------------------------------------
+Table usuarios {
+  id bigint [pk, increment, note: 'GENERATED ALWAYS AS IDENTITY']
+  nome varchar(120) [not null, note: 'PII. CHECK: ao menos 2 caracteres']
+  email varchar(254) [not null, unique, note: 'PII. CHECK: minúsculo e formato de e-mail']
+  senha_hash varchar(60) [not null, note: 'Hash bcrypt. CHECK: formato $2a/$2b/$2y$ + 53 caracteres']
+  perfil varchar(20) [not null, note: 'CHECK IN (ESTUDANTE, MENTOR, COORDENADOR, ADMINISTRADOR)']
+  ativo boolean [not null, default: true, note: 'Exclusão lógica. Trigger impede desativar o último administrador ativo']
+  aceite_privacidade_em timestamptz [not null, note: 'Momento do aceite do próprio titular']
+  aceite_privacidade_fonte varchar(18) [not null, default: 'AUTOCADASTRO', note: 'AUTOCADASTRO ou INSTITUCIONAL']
+  aceite_privacidade_referencia varchar(120) [note: 'Obrigatório quando fonte = INSTITUCIONAL; ID da evidência externa']
+  criado_em timestamptz [not null, default: `now()`]
+  atualizado_em timestamptz [not null, default: `now()`, note: 'Mantido por trigger']
+
+  indexes {
+    perfil [name: 'ix_usuarios_perfil_ativos', note: 'Índice parcial: WHERE ativo']
+  }
+
+  Note: 'Os quatro atores são perfis desta tabela. RN11: trigger bloqueia troca de perfil com compromissos futuros; RN12: aceite institucional exige referência.'
+}
+
+Table perfis_mentor {
+  usuario_id bigint [pk, note: 'PK e FK: garante 1 → 0..1. Trigger exige perfil MENTOR']
+  biografia varchar(1000)
+  formacao varchar(255)
+  contato_sessao varchar(255) [note: 'PII (contato)']
+
+  Note: 'RF006 (Should). Dados de apresentação do mentor.'
+}
+
+// ---------------------------------------------------------------------
+// Catálogo e oferta do mentor
+// ---------------------------------------------------------------------
+Table disciplinas {
+  id bigint [pk, increment]
+  codigo varchar(20) [not null, unique, note: 'CHECK: maiúsculo, 2+ caracteres']
+  nome varchar(120) [not null]
+  ativa boolean [not null, default: true, note: 'Exclusão lógica']
+
+  Note: 'Catálogo mantido pela administração (RF021, Must).'
+}
+
+Table mentor_disciplinas {
+  mentor_id bigint [not null, note: 'Trigger exige perfil MENTOR ativo']
+  disciplina_id bigint [not null]
+
+  indexes {
+    (mentor_id, disciplina_id) [pk]
+    disciplina_id [name: 'ix_mentor_disciplinas_disciplina']
+  }
+
+  Note: 'Vínculo N:N mentor ↔ disciplina.'
+}
+
+Table disponibilidades {
+  id bigint [pk, increment]
+  mentor_id bigint [not null, note: 'Trigger exige perfil MENTOR ativo']
+  inicio_em timestamptz [not null]
+  duracao_minutos integer [not null, note: 'CHECK 30, 45 ou 60 minutos (RF008)']
+  ativa boolean [not null, default: true]
+  criado_em timestamptz [not null, default: `now()`]
+
+  indexes {
+    (id, mentor_id, inicio_em, duracao_minutos) [unique, name: 'uq_disponibilidades_snapshot']
+    (mentor_id, inicio_em) [name: 'ix_disponibilidades_mentor_inicio', note: 'Índice parcial: WHERE ativa']
+  }
+
+  Note: '''
+  Horário oferecido pelo mentor (não é reserva). RN13: horário com histórico é imutável; não inativar com reserva ativa.
+  EXCLUDE USING gist (mentor_id WITH =, fn_periodo(inicio_em, duracao_minutos) WITH &&) WHERE (ativa)
+  → um mentor não tem duas disponibilidades ativas sobrepostas.
+  '''
+}
+
+// ---------------------------------------------------------------------
+// Fluxo de mentoria
+// ---------------------------------------------------------------------
+Table agendamentos {
+  id bigint [pk, increment]
+  disponibilidade_id bigint [not null]
+  estudante_id bigint [not null, note: 'Trigger exige perfil ESTUDANTE ativo. CHECK estudante_id <> mentor_id']
+  mentor_id bigint [not null, note: 'Igual ao mentor da disponibilidade (FK composta)']
+  disciplina_id bigint [not null, note: 'Trigger: disciplina ativa e atendida pelo mentor']
+  inicio_em timestamptz [not null, note: 'Cópia do horário da disponibilidade (FK composta)']
+  duracao_minutos integer [not null, note: 'Cópia da duração da disponibilidade (FK composta)']
+  status varchar(12) [not null, default: 'PENDENTE', note: 'CHECK IN (PENDENTE, CONFIRMADO, RECUSADO, CANCELADO, EXPIRADO, CONCLUIDO). Transições validadas por trigger']
+  observacao varchar(500) [note: 'Texto livre do estudante (pode conter PII)']
+  justificativa varchar(500) [note: 'Motivo de recusa/cancelamento']
+  criado_em timestamptz [not null, default: `now()`, note: 'Definido pelo servidor; base da expiração de 48 h']
+  respondido_em timestamptz [note: 'Preenchido por trigger ao CONFIRMAR ou RECUSAR']
+
+  indexes {
+    (id, status) [unique, name: 'uq_agendamentos_id_status']
+    disponibilidade_id [name: 'ux_agendamentos_disponibilidade_ativa', note: 'ÍNDICE ÚNICO PARCIAL: UNIQUE (disponibilidade_id) WHERE status IN (PENDENTE, CONFIRMADO). O DBML não representa WHERE']
+    (estudante_id, inicio_em) [name: 'ix_agendamentos_estudante']
+    (mentor_id, status, inicio_em) [name: 'ix_agendamentos_mentor_status']
+    disciplina_id [name: 'ix_agendamentos_disciplina']
+    criado_em [name: 'ix_agendamentos_pendentes_criado', note: 'Índice parcial: WHERE status = PENDENTE']
+  }
+
+  Note: '''
+  Pedido do estudante para ocupar uma disponibilidade. Começa PENDENTE.
+  Regras no banco:
+  1) Índice único parcial → no máximo 1 agendamento ativo por disponibilidade.
+  2) EXCLUDE USING gist (estudante_id WITH =, fn_periodo(inicio_em, duracao_minutos) WITH &&)
+     WHERE (status IN (PENDENTE, CONFIRMADO)) → estudante sem reservas ativas sobrepostas.
+  3) Trigger de transição: PENDENTE → CONFIRMADO | RECUSADO | CANCELADO | EXPIRADO;
+     CONFIRMADO → CONCLUIDO | CANCELADO. EXPIRADO só após 48 h.
+  '''
+}
+
+Table sessoes_mentoria {
+  id bigint [pk, increment]
+  agendamento_id bigint [not null, unique]
+  status_agendamento varchar(12) [not null, default: 'CONCLUIDO', note: 'Discriminadora técnica. CHECK = CONCLUIDO']
+  compareceu boolean [not null]
+  duracao_real_min integer [note: 'CHECK > 0; NULL quando compareceu = false']
+  observacoes varchar(2000) [note: 'Texto livre do mentor (pode conter PII)']
+  registrado_em timestamptz [not null, default: `now()`]
+
+  indexes {
+    (id, compareceu) [unique, name: 'uq_sessoes_mentoria_id_compareceu']
+  }
+
+  Note: 'Sessão de mentoria efetivamente registrada. Nome canônico (não usar RegistroSessao).'
+}
+
+Table avaliacoes {
+  id bigint [pk, increment]
+  sessao_id bigint [not null, unique, note: 'Uma avaliação por sessão']
+  sessao_compareceu boolean [not null, default: true, note: 'Discriminadora técnica. CHECK = true']
+  nota smallint [not null, note: 'CHECK BETWEEN 1 AND 5']
+  comentario varchar(1000) [note: 'Texto livre (pode conter PII)']
+  criado_em timestamptz [not null, default: `now()`]
+
+  Note: 'Avaliação de sessão concluída com comparecimento. Visões gerenciais não identificam o estudante.'
+}
+
+// ---------------------------------------------------------------------
+// Suporte
+// ---------------------------------------------------------------------
+Table notificacoes {
+  id bigint [pk, increment]
+  usuario_id bigint [not null]
+  agendamento_id bigint
+  mensagem varchar(500) [not null]
+  lida boolean [not null, default: false]
+  criado_em timestamptz [not null, default: `now()`]
+
+  indexes {
+    (usuario_id, criado_em) [name: 'ix_notificacoes_usuario_nao_lidas', note: 'Índice parcial: WHERE NOT lida']
+    agendamento_id [name: 'ix_notificacoes_agendamento']
+  }
+
+  Note: 'RF018 (Could). Aviso interno; sem e-mail/SMS.'
+}
+
+Table logs_auditoria {
+  id bigint [pk, increment]
+  administrador_id bigint [not null, note: 'Trigger exige perfil ADMINISTRADOR ativo']
+  acao varchar(60) [not null, note: 'CHECK: MAIUSCULAS_COM_SUBLINHADO']
+  tipo_alvo varchar(30) [not null, note: 'CHECK: MAIUSCULAS_COM_SUBLINHADO']
+  alvo_id bigint [not null]
+  criado_em timestamptz [not null, default: `now()`]
+
+  indexes {
+    (administrador_id, criado_em) [name: 'ix_logs_auditoria_administrador']
+    (tipo_alvo, alvo_id) [name: 'ix_logs_auditoria_alvo']
+    criado_em [name: 'ix_logs_auditoria_criado']
+  }
+
+  Note: 'RNF024. Somente inserção (trigger bloqueia UPDATE/TRUNCATE; DELETE só após retenção de 12 meses, a validar).'
+}
+
+// ---------------------------------------------------------------------
+// Relacionamentos (nomes iguais às constraints do schema.sql)
+// ---------------------------------------------------------------------
+Ref fk_perfis_mentor_usuario: perfis_mentor.usuario_id - usuarios.id [delete: restrict]
+
+Ref fk_mentor_disciplinas_mentor: mentor_disciplinas.mentor_id > usuarios.id [delete: restrict]
+Ref fk_mentor_disciplinas_disciplina: mentor_disciplinas.disciplina_id > disciplinas.id [delete: restrict]
+
+Ref fk_disponibilidades_mentor: disponibilidades.mentor_id > usuarios.id [delete: restrict]
+
+Ref fk_agendamentos_disponibilidade: agendamentos.(disponibilidade_id, mentor_id, inicio_em, duracao_minutos) > disponibilidades.(id, mentor_id, inicio_em, duracao_minutos) [delete: restrict, update: no action]
+Ref fk_agendamentos_estudante: agendamentos.estudante_id > usuarios.id [delete: restrict]
+Ref fk_agendamentos_mentor: agendamentos.mentor_id > usuarios.id [delete: restrict]
+Ref fk_agendamentos_disciplina: agendamentos.disciplina_id > disciplinas.id [delete: restrict]
+
+Ref fk_sessoes_mentoria_agendamento: sessoes_mentoria.(agendamento_id, status_agendamento) - agendamentos.(id, status) [delete: restrict, update: no action]
+
+Ref fk_avaliacoes_sessao: avaliacoes.(sessao_id, sessao_compareceu) - sessoes_mentoria.(id, compareceu) [delete: restrict, update: no action]
+
+Ref fk_notificacoes_usuario: notificacoes.usuario_id > usuarios.id [delete: cascade]
+Ref fk_notificacoes_agendamento: notificacoes.agendamento_id > agendamentos.id [delete: set null]
+
+Ref fk_logs_auditoria_administrador: logs_auditoria.administrador_id > usuarios.id [delete: restrict]
+
+// ---------------------------------------------------------------------
+// Agrupamento por módulo do monólito modular
+// ---------------------------------------------------------------------
+TableGroup autenticacao_usuarios {
+  usuarios
+  perfis_mentor
+}
+
+TableGroup mentores_disciplinas {
+  disciplinas
+  mentor_disciplinas
+}
+
+TableGroup disponibilidades_agendamentos {
+  disponibilidades
+  agendamentos
+}
+
+TableGroup sessoes_avaliacoes {
+  sessoes_mentoria
+  avaliacoes
+}
+
+TableGroup administracao_suporte {
+  logs_auditoria
+  notificacoes
+}

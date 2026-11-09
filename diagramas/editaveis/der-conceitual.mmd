@@ -1,0 +1,28 @@
+---
+title: "MentorIA Acadêmica — Modelo Conceitual (DER) · Hadson, Kennedy e Guilherme · 08/11/2026"
+---
+erDiagram
+    USUARIO ||--o| PERFIL_MENTOR : "possui (se MENTOR)"
+    USUARIO ||--o{ MENTOR_DISCIPLINA : "atende (MENTOR)"
+    DISCIPLINA ||--o{ MENTOR_DISCIPLINA : "é atendida em"
+    USUARIO ||--o{ DISPONIBILIDADE : "oferece (MENTOR)"
+    DISPONIBILIDADE ||--o{ AGENDAMENTO : "é solicitada em (máx. 1 ativo)"
+    USUARIO ||--o{ AGENDAMENTO : "solicita (ESTUDANTE)"
+    USUARIO ||--o{ AGENDAMENTO : "atende (MENTOR)"
+    DISCIPLINA ||--o{ AGENDAMENTO : "é tema de"
+    AGENDAMENTO ||--o| SESSAO_MENTORIA : "gera (se CONCLUIDO)"
+    SESSAO_MENTORIA ||--o| AVALIACAO : "recebe (se compareceu)"
+    USUARIO ||--o{ NOTIFICACAO : "recebe"
+    AGENDAMENTO |o--o{ NOTIFICACAO : "é citado em"
+    USUARIO ||--o{ LOG_AUDITORIA : "registra (ADMINISTRADOR)"
+
+    USUARIO { string nome string email string perfil boolean ativo }
+    PERFIL_MENTOR { string biografia string formacao string contatoSessao }
+    DISCIPLINA { string codigo string nome boolean ativa }
+    MENTOR_DISCIPLINA { }
+    DISPONIBILIDADE { datetime inicioEm int duracaoMinutos boolean ativa }
+    AGENDAMENTO { string status datetime criadoEm datetime respondidoEm }
+    SESSAO_MENTORIA { boolean compareceu int duracaoRealMin }
+    AVALIACAO { int nota string comentario }
+    NOTIFICACAO { string mensagem boolean lida }
+    LOG_AUDITORIA { string acao string tipoAlvo datetime criadoEm }
